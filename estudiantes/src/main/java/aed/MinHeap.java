@@ -39,7 +39,7 @@ public class MinHeap<T extends Comparable<T>> {
         }
     }
 
-    public HandleHeap incertar(T valor){
+    public HandleHeap insertar(T valor){
         if (cantidadElementos >= arrayHeap.length) {
             throw new IllegalStateException("Heap is full");
         }
@@ -50,10 +50,65 @@ public class MinHeap<T extends Comparable<T>> {
         cantidadElementos++;
         return new HandleHeap(posicionActual, valor);
     }
-public static void main(String[] args) {
-    MinHeap<Integer> heap = new MinHeap<>(3);
-    heap.incertar(3);
-    heap.incertar(0);
-    heap.incertar(9);
-}
+
+        public T desencolar() {
+        if(cantidadElementos == 1){
+            T res = arrayHeap[0];
+            arrayHeap[0] = null;
+            cantidadElementos--;
+            return res;
+        }
+
+        T res = arrayHeap[0];
+        T ultimoInsertado = arrayHeap[cantidadElementos-1];
+        arrayHeap[0] = ultimoInsertado;
+        arrayHeap[cantidadElementos - 1] = null;
+        cantidadElementos--;
+        
+        siftDown(0);
+        return res;
+    }
+
+    private void siftDown(int nuevoElemento){
+        int indiceHijo = indiceHijoMayorPrioridad(nuevoElemento);
+        while (indiceHijo > 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[indiceHijo]) > 0) {
+            intercambiar(indiceHijo, nuevoElemento);
+            siftDown(indiceHijo);
+        }
+    }
+
+    private int indiceHijoMayorPrioridad(int pos){
+        boolean existeDerecho = (2 * pos + 2) < cantidadElementos;
+        boolean existeIzquierdo = (2 * pos + 1) < cantidadElementos;
+        
+        if (existeIzquierdo && existeDerecho) {
+            T hijoDerecho = arrayHeap[(2 * pos) + 2];
+            T hijoIzquierdo = arrayHeap[(2 * pos) + 1];
+
+            if (hijoIzquierdo.compareTo(hijoDerecho) < 0) {
+                return ((2 * pos) + 1);
+            } else {
+                return ((2 * pos) + 2);
+            }
+        } else if  (existeIzquierdo && !existeDerecho) {
+            return ((2 * pos) + 1);
+        } else if (!existeIzquierdo && existeDerecho) {
+            return ((2 * pos) + 2);
+        } else {
+            return -1;
+        }
+    }
+//testing
+    public static void main(String[] args) {
+        int NVALORES = 10;
+        MinHeap<Integer> heap = new MinHeap<>(NVALORES);
+        Integer[] ejemplo = {20,10,15,8,7,13,14,2,5,6};
+        for (int i = 0; i < NVALORES; i++) {
+            heap.insertar(ejemplo[i]);
+        }
+
+        while (heap.cantidadElementos > 0){
+            System.out.println(heap.desencolar());
+        }
+    }
 }
