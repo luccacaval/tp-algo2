@@ -32,14 +32,14 @@ public class MaxHeap <T extends Comparable<T>>{
 
     private void restaurarInvariante(int nuevoElemento){
         int padre = obtenerPadre(nuevoElemento);
-        while (padre >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[padre]) < 0) {
-            intercambiar(nuevoElemento, padre);
+        while (padre >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[padre]) > 0) {
+            intercambiar(padre, nuevoElemento);
             nuevoElemento = padre;
             padre = obtenerPadre(nuevoElemento);
         }
     }
 
-    public HandleHeap incertar(T valor){
+    public HandleHeap insertar(T valor){
         if (cantidadElementos >= arrayHeap.length) {
             throw new IllegalStateException("Heap is full");
         }
@@ -49,5 +49,12 @@ public class MaxHeap <T extends Comparable<T>>{
         restaurarInvariante(cantidadElementos);
         cantidadElementos++;
         return new HandleHeap(posicionActual, valor);
-}
+    }
+
+    public static void main(String[] args) {
+        MaxHeap<Integer> heap = new MaxHeap<>(3);
+        heap.insertar(3);
+        heap.insertar(0);
+        heap.insertar(9);
+    }
 }
