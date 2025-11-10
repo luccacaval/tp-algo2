@@ -30,12 +30,60 @@ public class MaxHeap <T extends Comparable<T>>{
         this.arrayHeap[hijo] = temp;
     }
 
-    private void restaurarInvariante(int nuevoElemento){
+    private void siftUp(int nuevoElemento){
         int padre = obtenerPadre(nuevoElemento);
         while (padre >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[padre]) > 0) {
             intercambiar(padre, nuevoElemento);
             nuevoElemento = padre;
             padre = obtenerPadre(nuevoElemento);
+        }
+    }
+
+    public T desencolar() {
+        if(cantidadElementos == 1){
+            T res = arrayHeap[0];
+            arrayHeap[0] = null;
+            cantidadElementos--;
+            return res;
+        }
+
+        T res = arrayHeap[0];
+        T ultimoInsertado = arrayHeap[cantidadElementos-1];
+        arrayHeap[0] = ultimoInsertado;
+        arrayHeap[cantidadElementos - 1] = null;
+        cantidadElementos--;
+        
+        siftDown(0);
+        return res;
+    }
+
+    private void siftDown(int nuevoElemento){
+        int indiceHijo = indiceHijoMayorPrioridad(nuevoElemento);
+        while (indiceHijo > 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[indiceHijo]) < 0) {
+            intercambiar(indiceHijo, nuevoElemento);
+            siftDown(indiceHijo);
+        }
+    }
+
+    private int indiceHijoMayorPrioridad(int pos){
+        boolean existeDerecho = (2 * pos + 2) < cantidadElementos;
+        boolean existeIzquierdo = (2 * pos + 1) < cantidadElementos;
+        
+        if (existeIzquierdo && existeDerecho) {
+            T hijoDerecho = arrayHeap[(2 * pos) + 2];
+            T hijoIzquierdo = arrayHeap[(2 * pos) + 1];
+
+            if (hijoIzquierdo.compareTo(hijoDerecho) > 0) {
+                return ((2 * pos) + 1);
+            } else {
+                return ((2 * pos) + 2);
+            }
+        } else if  (existeIzquierdo && !existeDerecho) {
+            return ((2 * pos) + 1);
+        } else if (!existeIzquierdo && existeDerecho) {
+            return ((2 * pos) + 2);
+        } else {
+            return -1;
         }
     }
 
@@ -46,15 +94,25 @@ public class MaxHeap <T extends Comparable<T>>{
         
         this.arrayHeap[cantidadElementos] = valor;
         int posicionActual = cantidadElementos;
-        restaurarInvariante(cantidadElementos);
+        siftUp(cantidadElementos);
         cantidadElementos++;
         return new HandleHeap(posicionActual, valor);
     }
 
+    //testing
     public static void main(String[] args) {
-        MaxHeap<Integer> heap = new MaxHeap<>(3);
-        heap.insertar(3);
-        heap.insertar(0);
-        heap.insertar(9);
+        int NVALORES = 10;
+        MaxHeap<Integer> heap = new MaxHeap<>(NVALORES);
+        Integer[] ejemplo = {20,10,15,8,7,13,14,2,5,6};
+        for (int i = 0; i < NVALORES; i++) {
+            heap.insertar(ejemplo[i]);
+        }
+
+        while (heap.cantidadElementos > 0){
+            System.out.println(heap.desencolar());
+        }
     }
+
+    
+
 }
