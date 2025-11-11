@@ -1,20 +1,86 @@
 package aed;
 public class EdR {
-    private MinHeap<Integer> _notas_de_estudiantes;
-    private MaxHeap<Integer> _estudiantes_entregados;
-    private Alumno[] _estudiantes_por_id;
-    private Integer _lado_aula;
-    private Integer[] _examen_canonico;
+    private MinHeap<Alumno> _notas_de_estudiantes;
+    private MaxHeap<Alumno> _estudiantes_entregados;
+    private MinHeap.HandleHeap[] _estudiantes_por_id;
+    private int _lado_aula;
+    private int[] _examen_canonico;
+    private int idActual; 
 
-    public EdR nuevoEdR(int ladoAula, int cantidadEstudiantes, Integer[] examenCanonico) {
-        return new EdR(ladoAula, cantidadEstudiantes, examenCanonico);
+//-------------------------------------------------NOTAS--------------------------------------------------------------------------
+
+    public double[] notas(){
+        double[] res = new double[_estudiantes_por_id.length];
+        for(int i = 0;i<_estudiantes_por_id.length;i++){
+            if (_estudiantes_por_id[i] != null){
+                Alumno alumnoActual = (Alumno) _estudiantes_por_id[i].valor;
+                res[i] = alumnoActual.getNota();
+            } else {
+                res[i] = 0;
+            }
+        }
+        return res;
     }
 
-    private EdR(int ladoAula, int cantidadEstudiantes, Integer[] examenCanonico) {
+//------------------------------------------------COPIARSE------------------------------------------------------------------------
+
+
+
+
+
+
+//-----------------------------------------------RESOLVER----------------------------------------------------------------
+
+
+
+
+    public void resolver(int estudiante, int NroEjercicio, int res) {
+        if (_estudiantes_por_id[estudiante] == null){
+            Alumno alumnoActual = new Alumno(this._examen_canonico.length,this.idActual);
+            idActual++;
+            alumnoActual.resolverEjercicio(NroEjercicio, res, _examen_canonico);
+            this._estudiantes_por_id[estudiante] = this._notas_de_estudiantes.insertar(alumnoActual);
+        } else{
+            Alumno alumnoActual = (Alumno) _estudiantes_por_id[estudiante].valor;
+            alumnoActual.resolverEjercicio(NroEjercicio, res, _examen_canonico);
+            _estudiantes_por_id[estudiante].restaurarInv();
+        }
+    }
+
+
+
+//------------------------------------------------CONSULTAR DARK WEB-------------------------------------------------------
+
+    public void consultarDarkWeb(int n, int[] examenDW) {
+        throw new UnsupportedOperationException("Sin implementar");
+    }
+ 
+
+//-------------------------------------------------ENTREGAR-------------------------------------------------------------
+
+    public void entregar(int estudiante) {
+        throw new UnsupportedOperationException("Sin implementar");
+    }
+
+//-----------------------------------------------------CORREGIR---------------------------------------------------------
+
+    public NotaFinal[] corregir() {
+        throw new UnsupportedOperationException("Sin implementar");
+    }
+
+//-------------------------------------------------------CHEQUEAR COPIAS-------------------------------------------------
+
+    public int[] chequearCopias() {
+        throw new UnsupportedOperationException("Sin implementar");
+    }
+
+
+    public EdR(int ladoAula, int cantidadEstudiantes, int[] examenCanonico) {
         //comprobar si entran los estudiantes en el aula de ladoAula;
-        _estudiantes_por_id = new Alumno[cantidadEstudiantes];
+        _estudiantes_por_id = new MinHeap.HandleHeap[cantidadEstudiantes];
         _notas_de_estudiantes = new MinHeap<>(cantidadEstudiantes);
         _estudiantes_entregados = new MaxHeap<>(cantidadEstudiantes);
+        idActual = 0;
         //esto no tarda O(E*R) ni en pedo
         //crear un heap con nodos.
 

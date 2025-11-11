@@ -4,13 +4,17 @@ public class MinHeap<T extends Comparable<T>> {
     private T[] arrayHeap;
     int cantidadElementos;
 
-    private class HandleHeap {
+    public class HandleHeap {
         int posicion;
         T valor;
         
-        public HandleHeap(int posicion,T valor){
+        private HandleHeap(int posicion,T valor){
             this.posicion = posicion;
             this.valor = valor;
+        }
+
+        public void restaurarInv(){
+            restaurarInvariante(posicion);
         }
     }
 
@@ -32,7 +36,7 @@ public class MinHeap<T extends Comparable<T>> {
 
     private void restaurarInvariante(int nuevoElemento){
         int padre = obtenerPadre(nuevoElemento);
-        while (padre >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[padre]) < 0) {
+        while (padre > 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[padre]) < 0) {
             intercambiar(nuevoElemento, padre);
             nuevoElemento = padre;
             padre = obtenerPadre(nuevoElemento);
@@ -46,7 +50,9 @@ public class MinHeap<T extends Comparable<T>> {
         
         this.arrayHeap[cantidadElementos] = valor;
         int posicionActual = cantidadElementos;
-        restaurarInvariante(cantidadElementos);
+        if(cantidadElementos != 0){
+            restaurarInvariante(cantidadElementos);
+        }
         cantidadElementos++;
         return new HandleHeap(posicionActual, valor);
     }

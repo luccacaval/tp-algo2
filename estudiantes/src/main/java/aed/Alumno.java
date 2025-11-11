@@ -3,14 +3,19 @@ package aed;
 public class Alumno implements Comparable<Alumno>{
     private int[] examen;
     private int nota;
+    private int id;
 
-    public Alumno(int cantidadEjercicios){
+    public Alumno(int cantidadEjercicios, int id){
         this.examen = new int[cantidadEjercicios];
         int nota = 0;
+        this.id = id;
     }
 
-    public void resolverEjercicio(int ejercicio,int respuesta){
+    public void resolverEjercicio(int ejercicio,int respuesta,int[] examenCanonico){
         this.examen[ejercicio] = respuesta;
+        if (respuesta == examenCanonico[ejercicio]){
+            this.nota += 10;
+        }
     }
 
     public void reemplazarExamen(int[] nuevoExamen){
@@ -39,9 +44,16 @@ public class Alumno implements Comparable<Alumno>{
     }
 
 @Override
-    public int compareTo(Alumno o) {
-        // TODO Auto-generated method stub
-        return Integer.compare(this.nota, o.nota);
+    public int compareTo(Alumno alumno2) {
+        if (this.nota > alumno2.nota) return 1;
+        else if (this.nota < alumno2.nota) return -1;
+        else {
+            if (this.id > alumno2.id){
+                return 1;
+            } else {
+                return -1;
+            }
+        }
 }
 }
 
