@@ -22,11 +22,22 @@ public class Alumno implements Comparable<Alumno>{
         }
     }
 
-    public void corregirEjercicio(int[] ExamenCanonico, int ejercicio){
-        if (this.examen[ejercicio] == ExamenCanonico[ejercicio]){
-            this.nota += 1;
+    public int[] getExamen() {
+        int[] res = new int[examen.length];
+        for (int i = 0; i < examen.length; i++) {
+            res[i] = examen[i];
         }
+        return res;
     }
+
+    public int getNota() {
+        return this.nota;
+    }
+
+    public void actualizarNota(int nuevaNota) {
+        this.nota = nuevaNota;
+    }
+
 @Override
     public int compareTo(Alumno o) {
         // TODO Auto-generated method stub
