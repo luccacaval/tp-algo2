@@ -1,22 +1,36 @@
 package aed;
 
-public class MinHeap <T extends Comparable<T>>{
-    private T[] arrayHeap;
+public class MinHeapAlumno {
+    private Alumno[] arrayHeap;
     int cantidadElementos;
 
     public class HandleHeap {
-        int posicion;
-        T valor;
+        private int posicion;
+        private Alumno valor;
         
-        private HandleHeap(int posicion,T valor){
+        private HandleHeap(int posicion,Alumno valor){
             this.posicion = posicion;
             this.valor = valor;
         }
+
+        public int obtenerNota(){
+            return valor.getNota();
+        }
+
+        public void resolverEjercicio(int ejercicio, int respuesta,int[] _examen_canonico){
+            int notaAnterior = obtenerNota();
+            valor.resolverEjercicio(ejercicio, respuesta, _examen_canonico);
+            int notaActual = obtenerNota();
+            if (notaActual > notaAnterior){
+                siftDown(posicion);
+            }
+        }
+
     }
 
     @SuppressWarnings("unchecked")
-    public MinHeap(int capacidad){
-        arrayHeap =  (T[]) new Comparable[capacidad];
+    public MinHeapAlumno(int capacidad){
+        arrayHeap =  new Alumno[capacidad];
         this.cantidadElementos = 0;
     }
 
@@ -25,12 +39,12 @@ public class MinHeap <T extends Comparable<T>>{
     }
 
     private void intercambiar(int padre, int hijo){
-        T temp = this.arrayHeap[padre];
+        Alumno temp = this.arrayHeap[padre];
         this.arrayHeap[padre] = arrayHeap[hijo];
         this.arrayHeap[hijo] = temp;
     }
 
-    private void restaurarInvariante(int nuevoElemento){
+    private void shiftUp(int nuevoElemento){
         int padre = obtenerPadre(nuevoElemento);
         while (padre >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[padre]) < 0) {
             intercambiar(nuevoElemento, padre);
@@ -39,7 +53,7 @@ public class MinHeap <T extends Comparable<T>>{
         }
     }
 
-    public HandleHeap insertar(T valor){
+    public HandleHeap insertar(Alumno valor){
         if (cantidadElementos >= arrayHeap.length) {
             throw new IllegalStateException("Heap is full");
         }
@@ -47,22 +61,22 @@ public class MinHeap <T extends Comparable<T>>{
         this.arrayHeap[cantidadElementos] = valor;
         int posicionActual = cantidadElementos;
         if(cantidadElementos != 0){
-            restaurarInvariante(cantidadElementos);
+            shiftUp(cantidadElementos);
         }
         cantidadElementos++;
         return new HandleHeap(posicionActual, valor);
     }
 
-        public T desencolar() {
+        public Alumno desencolar() {
         if(cantidadElementos == 1){
-            T res = arrayHeap[0];
+            Alumno res = arrayHeap[0];
             arrayHeap[0] = null;
             cantidadElementos--;
             return res;
         }
 
-        T res = arrayHeap[0];
-        T ultimoInsertado = arrayHeap[cantidadElementos-1];
+        Alumno res = arrayHeap[0];
+        Alumno ultimoInsertado = arrayHeap[cantidadElementos-1];
         arrayHeap[0] = ultimoInsertado;
         arrayHeap[cantidadElementos - 1] = null;
         cantidadElementos--;
@@ -73,7 +87,7 @@ public class MinHeap <T extends Comparable<T>>{
 
     private void siftDown(int nuevoElemento){
         int indiceHijo = indiceHijoMayorPrioridad(nuevoElemento);
-        while (indiceHijo > 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[indiceHijo]) > 0) {
+        while (indiceHijo >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[indiceHijo]) > 0) {
             intercambiar(indiceHijo, nuevoElemento);
             siftDown(indiceHijo);
         }
@@ -84,8 +98,8 @@ public class MinHeap <T extends Comparable<T>>{
         boolean existeIzquierdo = (2 * pos + 1) < cantidadElementos;
         
         if (existeIzquierdo && existeDerecho) {
-            T hijoDerecho = arrayHeap[(2 * pos) + 2];
-            T hijoIzquierdo = arrayHeap[(2 * pos) + 1];
+            Alumno hijoDerecho = arrayHeap[(2 * pos) + 2];
+            Alumno hijoIzquierdo = arrayHeap[(2 * pos) + 1];
 
             if (hijoIzquierdo.compareTo(hijoDerecho) < 0) {
                 return ((2 * pos) + 1);
@@ -100,6 +114,5 @@ public class MinHeap <T extends Comparable<T>>{
             return -1;
         }
     }
-//testing
     
 }

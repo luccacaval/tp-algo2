@@ -4,13 +4,17 @@ public class MaxHeap <T extends Comparable<T>>{
     private T[] arrayHeap;
     int cantidadElementos;
 
-    private class HandleHeap {
+    public class HandleHeap {
         int posicion;
         T valor;
         
-        public HandleHeap(int posicion,T valor){
+        private HandleHeap(int posicion,T valor){
             this.posicion = posicion;
             this.valor = valor;
+        }
+
+        public void restaurarInv(){
+            siftUp(this.posicion);
         }
     }
 

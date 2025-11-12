@@ -1,11 +1,12 @@
 package aed;
 public class EdR {
-    private MinHeap<Alumno> _notas_de_estudiantes;
+    private MinHeapAlumno _notas_de_estudiantes;
     private MaxHeap<Alumno> _estudiantes_entregados;
-    private MinHeap.HandleHeap[] _estudiantes_por_id;
+    private MinHeapAlumno.HandleHeap[] _estudiantes_por_id;
     private int _lado_aula;
     private int[] _examen_canonico;
     private int idActual; 
+    private int[][] respuestasPorEjercicio;
 
 //-------------------------------------------------NOTAS--------------------------------------------------------------------------
 
@@ -13,8 +14,7 @@ public class EdR {
         double[] res = new double[_estudiantes_por_id.length];
         for(int i = 0;i<_estudiantes_por_id.length;i++){
             if (_estudiantes_por_id[i] != null){
-                Alumno alumnoActual = (Alumno) _estudiantes_por_id[i].valor;
-                res[i] = alumnoActual.getNota();
+                res[i] = _estudiantes_por_id[i].obtenerNota();
             } else {
                 res[i] = 0;
             }
@@ -36,15 +36,15 @@ public class EdR {
 
     public void resolver(int estudiante, int NroEjercicio, int res) {
         if (_estudiantes_por_id[estudiante] == null){
-            Alumno alumnoActual = new Alumno(this._examen_canonico.length,this.idActual);
+            Alumno alumnoActual = new Alumno(this._examen_canonico.length, this.idActual);
             idActual++;
             alumnoActual.resolverEjercicio(NroEjercicio, res, _examen_canonico);
             this._estudiantes_por_id[estudiante] = this._notas_de_estudiantes.insertar(alumnoActual);
         } else{
-            Alumno alumnoActual = (Alumno) _estudiantes_por_id[estudiante].valor;
+            MinHeapAlumno.HandleHeap alumnoActual = _estudiantes_por_id[estudiante];
             alumnoActual.resolverEjercicio(NroEjercicio, res, _examen_canonico);
-            _estudiantes_por_id[estudiante].restaurarInv();
         }
+        respuestasPorEjercicio[NroEjercicio][res] += 1;
     }
 
 
@@ -77,13 +77,13 @@ public class EdR {
 
     public EdR(int ladoAula, int cantidadEstudiantes, int[] examenCanonico) {
         //comprobar si entran los estudiantes en el aula de ladoAula;
-        _estudiantes_por_id = new MinHeap.HandleHeap[cantidadEstudiantes];
-        _notas_de_estudiantes = new MinHeap<>(cantidadEstudiantes);
+        _estudiantes_por_id = new MinHeapAlumno.HandleHeap[cantidadEstudiantes];
+        _notas_de_estudiantes = new MinHeapAlumno(cantidadEstudiantes);
         _estudiantes_entregados = new MaxHeap<>(cantidadEstudiantes);
         idActual = 0;
         //esto no tarda O(E*R) ni en pedo
         //crear un heap con nodos.
-
+        respuestasPorEjercicio = new int[examenCanonico.length][10];
         //hace mas facil los calculos tratar el aula como si no hubiera espacios:
         //se lleva mejor con el array.
         _lado_aula = ladoAula/2;

@@ -11,9 +11,9 @@ public class Alumno implements Comparable<Alumno>{
         this.id = id;
     }
 
-    public void resolverEjercicio(int ejercicio,int respuesta,int[] examenCanonico){
+    public void resolverEjercicio(int ejercicio,int respuesta, int[] examenCanonico){
         this.examen[ejercicio] = respuesta;
-        if (respuesta == examenCanonico[ejercicio]){
+        if (examenCanonico[ejercicio] == respuesta){
             this.nota += 10;
         }
     }
@@ -44,16 +44,18 @@ public class Alumno implements Comparable<Alumno>{
     }
 
 @Override
-    public int compareTo(Alumno alumno2) {
-        if (this.nota > alumno2.nota) return 1;
-        else if (this.nota < alumno2.nota) return -1;
-        else {
-            if (this.id > alumno2.id){
-                return 1;
-            } else {
-                return -1;
-            }
+public int compareTo(Alumno alumno2) {
+    if (this.nota < alumno2.nota) return -1;
+    else if (this.nota > alumno2.nota) return 1;
+    else {
+        if (this.id < alumno2.id) {
+            return -1;
+        } else if (this.id > alumno2.id) {
+            return 1;
+        } else {
+            return 0;
         }
+    }
 }
 }
 
