@@ -24,8 +24,67 @@ public class EdR {
 
 //------------------------------------------------COPIARSE------------------------------------------------------------------------
 
+    public void copiarse(int estudiante) {
+        //busco vecinos
+        //elijo el vecino copiado
+        //desempato por id mayor
+        //estudiante incorpora la primera rta que no tenga del otro
+        int[] vecinos = hallarVecinos(estudiante);
+        if( vecinos != null){ // Si es distinto a null osea hay gente para copiarse , llamo a una funcion para ver cual es el que tiene mas rtas
+            //chequeoRtasVecinos(Copiador,ArrayVECINOS)
+
+        }
 
 
+
+    }
+
+    private int[] hallarVecinos(int estudiante) {
+        if (estudiante > _estudiantes_por_id.length || estudiante < 0) {
+                return null;
+        }
+
+        int[] vecinos = new int[3];
+                                    //java truca el cociente entre enteros
+        int vecino_de_adelante = estudiante + _lado_aula/2;
+        if (vecino_de_adelante < _estudiantes_por_id.length &&
+            _estudiantes_por_id[vecino_de_adelante] != null) {
+            vecinos[0] = vecino_de_adelante;
+        }
+        if (estudiante - 1 > 0 && _estudiantes_por_id[estudiante-1] != null) {
+            vecinos[1] = (estudiante - 1);
+        }
+        if (estudiante + 1 < _estudiantes_por_id.length && _estudiantes_por_id[estudiante+1] != null) {
+            vecinos[2] = (estudiante + 1);
+        }
+
+        //nice n sweet
+        return vecinos;
+    }
+
+    private int[] chequeoRtasVecinos(int copiador, int[] vecinos){
+        int copiado = -1;
+        int max_rtas = -1;
+        int[] examen_copiador = _estudiantes_por_id[copiador].obtenerExamen();
+        for (int i = 0 ; i < vecinos.length;i++){ // O(1)
+            int contador = 0;
+            int[] examen_vecino = _estudiantes_por_id[vecinos[i]].obtenerExamen(); // como accedo al examen del vecino (?)
+            for (int j = 0 ; j < examen_vecino.length ; j++){
+                if(examen_vecino[j] != -1 && examen_copiador[j] == -1){
+                    contador ++;
+                }
+            if (contador > max_rtas){
+                copiado = vecinos[i];
+                max_rtas = contador;
+            }
+
+            }
+
+
+
+        }
+
+    }
 
 
 
@@ -92,41 +151,12 @@ public class EdR {
 
     }
 
-    private void corregirEjercicio(Integer[] ExamenCanonico, Alumno alumno, int nroEjercicio, int rtaEjercicio){
+    private void corregirEjercicio(int[] ExamenCanonico, Alumno alumno, int nroEjercicio, int rtaEjercicio){
         if (ExamenCanonico[nroEjercicio] == rtaEjercicio){
             alumno.actualizarNota(alumno.getNota() + 1);
         }
     }
 
-    public void copiarse(int estudiante) {
-        //busco vecinos
-        //elijo el vecino copiado
-        //desempato por id mayor
-        //estudiante incorpora la primera rta que no tenga del otro
-    }
-
-    private Integer[] hallarVecinos(int estudiante) {
-        if (estudiante > _estudiantes_por_id.length || estudiante < 0) {
-                return null;
-        }
-
-        Integer[] vecinos = new Integer[3];
-                                    //java truca el cociente entre enteros
-        int vecino_de_adelante = estudiante + _lado_aula/2;
-        if (vecino_de_adelante < _estudiantes_por_id.length &&
-            _estudiantes_por_id[vecino_de_adelante] != null) {
-            vecinos[0] = vecino_de_adelante;
-        }
-        if (estudiante - 1 > 0 && _estudiantes_por_id[estudiante-1] != null) {
-            vecinos[1] = (estudiante - 1);
-        }
-        if (estudiante + 1 < _estudiantes_por_id.length && _estudiantes_por_id[estudiante+1] != null) {
-            vecinos[2] = (estudiante + 1);
-        }
-
-        //nice n sweet
-        return vecinos;
-    }
 
 
 

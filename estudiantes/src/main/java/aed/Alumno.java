@@ -7,6 +7,9 @@ public class Alumno implements Comparable<Alumno>{
 
     public Alumno(int cantidadEjercicios, int id){
         this.examen = new int[cantidadEjercicios];
+        for (int i = 0; i < cantidadEjercicios; i++) {
+            examen[i] = -1;
+        }
         int nota = 0;
         this.id = id;
     }
@@ -29,7 +32,7 @@ public class Alumno implements Comparable<Alumno>{
 
     public int[] getExamen() {
         int[] res = new int[examen.length];
-        for (int i = 0; i < examen.length; i++) {
+        for (Integer i = 0; i < examen.length; i++) {
             res[i] = examen[i];
         }
         return res;

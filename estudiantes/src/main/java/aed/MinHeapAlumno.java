@@ -17,12 +17,16 @@ public class MinHeapAlumno {
             return valor.getNota();
         }
 
+        public int[] obtenerExamen(){
+            return this.valor.getExamen();
+        }
+
         public void resolverEjercicio(int ejercicio, int respuesta,int[] _examen_canonico){
             int notaAnterior = obtenerNota();
             valor.resolverEjercicio(ejercicio, respuesta, _examen_canonico);
             int notaActual = obtenerNota();
             if (notaActual > notaAnterior){
-                siftDown(posicion);
+                this.posicion = siftDown(posicion);
             }
         }
 
@@ -85,12 +89,14 @@ public class MinHeapAlumno {
         return res;
     }
 
-    private void siftDown(int nuevoElemento){
+    private int siftDown(int nuevoElemento){
         int indiceHijo = indiceHijoMayorPrioridad(nuevoElemento);
         while (indiceHijo >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[indiceHijo]) > 0) {
             intercambiar(indiceHijo, nuevoElemento);
-            siftDown(indiceHijo);
+            nuevoElemento = indiceHijo;
         }
+        return nuevoElemento;
+
     }
 
     private int indiceHijoMayorPrioridad(int pos){
