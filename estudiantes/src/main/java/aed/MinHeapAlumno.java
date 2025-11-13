@@ -30,6 +30,10 @@ public class MinHeapAlumno {
             }
         }
 
+        public void entregar(){
+            valor.entregar();
+        }
+
     }
 
     @SuppressWarnings("unchecked")
