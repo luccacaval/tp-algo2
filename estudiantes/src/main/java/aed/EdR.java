@@ -83,7 +83,7 @@ public class EdR {
 
 
         }
-
+        return new int[0];
     }
 
 
@@ -111,7 +111,19 @@ public class EdR {
 //------------------------------------------------CONSULTAR DARK WEB-------------------------------------------------------
 
     public void consultarDarkWeb(int n, int[] examenDW) {
-        throw new UnsupportedOperationException("Sin implementar");
+        int notaExamenDW = 0;
+        for (int i = 0;i<examenDW.length;i++){
+            if(examenDW[i] == this._examen_canonico[i]){
+                notaExamenDW+= 10;
+            }
+        }
+        for (int j = 0; j < n;j++){
+            Alumno alumnoActual = this._notas_de_estudiantes.desencolar();
+            int alumnoActualId = alumnoActual.getId();
+            alumnoActual.reemplazarExamen(examenDW);
+            alumnoActual.actualizarNota(notaExamenDW);
+            this._estudiantes_por_id[alumnoActualId] = this._notas_de_estudiantes.insertar(alumnoActual);
+        }
     }
  
 
@@ -137,9 +149,11 @@ public class EdR {
     public EdR(int ladoAula, int cantidadEstudiantes, int[] examenCanonico) {
         //comprobar si entran los estudiantes en el aula de ladoAula;
         _estudiantes_por_id = new MinHeapAlumno.HandleHeap[cantidadEstudiantes];
-        _notas_de_estudiantes = new MinHeapAlumno(cantidadEstudiantes);
+        _notas_de_estudiantes = new MinHeapAlumno(cantidadEstudiantes,examenCanonico.length);
+        for (int i = 0;i<cantidadEstudiantes;i++){
+            _estudiantes_por_id[i] = _notas_de_estudiantes.obtenerHandle(i);
+        }
         _estudiantes_entregados = new MaxHeap<>(cantidadEstudiantes);
-        idActual = 0;
         //esto no tarda O(E*R) ni en pedo
         //crear un heap con nodos.
         respuestasPorEjercicio = new int[examenCanonico.length][10];

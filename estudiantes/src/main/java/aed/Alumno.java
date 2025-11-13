@@ -30,6 +30,10 @@ public class Alumno implements Comparable<Alumno>{
         }
     }
 
+    public int getId(){
+        return this.id;
+    }
+
     public int[] getExamen() {
         int[] res = new int[examen.length];
         for (Integer i = 0; i < examen.length; i++) {

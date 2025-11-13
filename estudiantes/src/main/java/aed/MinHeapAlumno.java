@@ -33,9 +33,16 @@ public class MinHeapAlumno {
     }
 
     @SuppressWarnings("unchecked")
-    public MinHeapAlumno(int capacidad){
+    public MinHeapAlumno(int capacidad,int cantidadEjercicios){
         arrayHeap =  new Alumno[capacidad];
-        this.cantidadElementos = 0;
+        for (int i = 0;i<capacidad;i++){
+            arrayHeap[i] = new Alumno(cantidadEjercicios, i);
+        }
+        this.cantidadElementos = capacidad;
+    }
+
+    public HandleHeap obtenerHandle(int pos){
+        return new HandleHeap(pos, arrayHeap[pos]);
     }
 
     private int obtenerPadre(int pos){
@@ -48,13 +55,14 @@ public class MinHeapAlumno {
         this.arrayHeap[hijo] = temp;
     }
 
-    private void shiftUp(int nuevoElemento){
+    private int shiftUp(int nuevoElemento){
         int padre = obtenerPadre(nuevoElemento);
         while (padre >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[padre]) < 0) {
             intercambiar(nuevoElemento, padre);
             nuevoElemento = padre;
             padre = obtenerPadre(nuevoElemento);
         }
+        return nuevoElemento;
     }
 
     public HandleHeap insertar(Alumno valor){
@@ -65,7 +73,7 @@ public class MinHeapAlumno {
         this.arrayHeap[cantidadElementos] = valor;
         int posicionActual = cantidadElementos;
         if(cantidadElementos != 0){
-            shiftUp(cantidadElementos);
+           posicionActual = shiftUp(cantidadElementos);
         }
         cantidadElementos++;
         return new HandleHeap(posicionActual, valor);
@@ -94,6 +102,7 @@ public class MinHeapAlumno {
         while (indiceHijo >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[indiceHijo]) > 0) {
             intercambiar(indiceHijo, nuevoElemento);
             nuevoElemento = indiceHijo;
+            indiceHijo = indiceHijoMayorPrioridad(nuevoElemento);
         }
         return nuevoElemento;
 
