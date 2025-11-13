@@ -4,6 +4,7 @@ public class Alumno implements Comparable<Alumno>{
     private int[] examen;
     private int nota;
     private int id;
+    private boolean entrego;
 
     public Alumno(int cantidadEjercicios, int id){
         this.examen = new int[cantidadEjercicios];
@@ -12,6 +13,7 @@ public class Alumno implements Comparable<Alumno>{
         }
         int nota = 0;
         this.id = id;
+        this.entrego = false;
     }
 
     public void resolverEjercicio(int ejercicio,int respuesta, int[] examenCanonico){
@@ -19,6 +21,10 @@ public class Alumno implements Comparable<Alumno>{
         if (examenCanonico[ejercicio] == respuesta){
             this.nota += 10;
         }
+    }
+
+    public void entregar(){
+        this.entrego = true;
     }
 
     public void reemplazarExamen(int[] nuevoExamen){
@@ -52,9 +58,15 @@ public class Alumno implements Comparable<Alumno>{
 
 @Override
 public int compareTo(Alumno alumno2) {
+    // Si uno entregó y el otro no, el que entregó tiene menor prioridad (va al final)
+    if (this.entrego && !alumno2.entrego) return 1;
+    if (!this.entrego && alumno2.entrego) return -1;
+    
+    // Si ambos entregaron o ambos no entregaron, comparar por nota
     if (this.nota < alumno2.nota) return -1;
     else if (this.nota > alumno2.nota) return 1;
     else {
+        // Si las notas son iguales, desempatar por id
         if (this.id < alumno2.id) {
             return -1;
         } else if (this.id > alumno2.id) {

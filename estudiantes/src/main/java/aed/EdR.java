@@ -1,4 +1,7 @@
 package aed;
+
+import java.util.ArrayList;
+
 public class EdR {
     private MinHeapAlumno _notas_de_estudiantes;
     private MaxHeap<Alumno> _estudiantes_entregados;
@@ -120,6 +123,12 @@ public class EdR {
         for (int j = 0; j < n;j++){
             Alumno alumnoActual = this._notas_de_estudiantes.desencolar();
             int alumnoActualId = alumnoActual.getId();
+            int[] examenAnterior = alumnoActual.getExamen();
+            for (int k = 0;k<examenAnterior.length;k++){
+                if(examenAnterior[k] != -1){
+                    this.respuestasPorEjercicio[k][examenAnterior[k]]--;
+                }
+            }
             alumnoActual.reemplazarExamen(examenDW);
             alumnoActual.actualizarNota(notaExamenDW);
             this._estudiantes_por_id[alumnoActualId] = this._notas_de_estudiantes.insertar(alumnoActual);
@@ -130,7 +139,7 @@ public class EdR {
 //-------------------------------------------------ENTREGAR-------------------------------------------------------------
 
     public void entregar(int estudiante) {
-        throw new UnsupportedOperationException("Sin implementar");
+        
     }
 
 //-----------------------------------------------------CORREGIR---------------------------------------------------------
@@ -142,7 +151,26 @@ public class EdR {
 //-------------------------------------------------------CHEQUEAR COPIAS-------------------------------------------------
 
     public int[] chequearCopias() {
-        throw new UnsupportedOperationException("Sin implementar");
+        ArrayList<Integer> copiones = new ArrayList<Integer>(_estudiantes_por_id.length);
+        for(int i = 0;i<this._estudiantes_por_id.length;i++){
+            int[] examen = this._estudiantes_por_id[i].obtenerExamen();
+            int j = 0;
+            boolean esCopion = true;
+            while (esCopion && j<examen.length) {
+                if(respuestasPorEjercicio[j][examen[j]] / _estudiantes_por_id.length < 0.25){
+                    esCopion = false;
+                }
+                j++;
+            }
+            if (esCopion){
+                copiones.add(i);
+            }
+        }
+        int[] res = new int[copiones.size()];
+        for (int i = 0;i<copiones.size();i++){
+            res[i] = copiones.get(i);
+        }
+        return res;
     }
 
 
