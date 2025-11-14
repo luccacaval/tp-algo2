@@ -27,66 +27,94 @@ public class EdR {
 
 //------------------------------------------------COPIARSE------------------------------------------------------------------------
 
-    public void copiarse(int estudiante) {
-        //busco vecinos
-        //elijo el vecino copiado
-        //desempato por id mayor
-        //estudiante incorpora la primera rta que no tenga del otro
-        int[] vecinos = hallarVecinos(estudiante);
+    public void copiarse(int estudiante) { 
+        int[] vecinos = hallarVecinos(estudiante); // O (1) porq son todas operaciones acotadas
         if( vecinos != null){ // Si es distinto a null osea hay gente para copiarse , llamo a una funcion para ver cual es el que tiene mas rtas
-            //chequeoRtasVecinos(Copiador,ArrayVECINOS)
-
+            
+            int pos_vecino_a_copiar = chequeoRtasVecinos(estudiante, vecinos); // O(R)
+            if (pos_vecino_a_copiar != -1){ 
+            //Busco el inciso que voy a copiar
+            int[] examen_vecino = _estudiantes_por_id[pos_vecino_a_copiar].obtenerExamen();
+            int[] examen_copiador = _estudiantes_por_id[estudiante].obtenerExamen();
+            int inciso_a_copiar = -1;
+            int j = 0;
+            while (inciso_a_copiar == -1 && j < examen_copiador.length){ // O(R) PEOR CASO
+                if(examen_copiador[j] == -1 && examen_vecino[j] != -1){
+                    inciso_a_copiar = j;
+                }
+                j++;
+            }
+            if (inciso_a_copiar != -1){
+            resolver(estudiante, inciso_a_copiar, examen_vecino[inciso_a_copiar]);} // LOG(E)
+            }
         }
-
-
-
     }
 
-    private int[] hallarVecinos(int estudiante) {
+    private int[] hallarVecinos(int estudiante) { // O (1) porq son todas operaciones acotadas
+        //Preguntar valen si el array en java cuando se inicializa , como se inicializaria
         if (estudiante > _estudiantes_por_id.length || estudiante < 0) {
                 return null;
         }
-
-        int[] vecinos = new int[3];
+        int contador_vecinos_validos = 0;
+        int[] vecinos_aux = {-1,-1,-1};
                                     //java truca el cociente entre enteros
         int vecino_de_adelante = estudiante + _lado_aula/2;
+
         if (vecino_de_adelante < _estudiantes_por_id.length &&
             _estudiantes_por_id[vecino_de_adelante] != null) {
-            vecinos[0] = vecino_de_adelante;
+            vecinos_aux[0] = vecino_de_adelante;
+            contador_vecinos_validos++;
         }
-        if (estudiante - 1 > 0 && _estudiantes_por_id[estudiante-1] != null) {
-            vecinos[1] = (estudiante - 1);
+        if (estudiante - 1 >= 0 && _estudiantes_por_id[estudiante-1] != null) {
+            vecinos_aux[1] = (estudiante - 1);
+            contador_vecinos_validos++;
         }
         if (estudiante + 1 < _estudiantes_por_id.length && _estudiantes_por_id[estudiante+1] != null) {
-            vecinos[2] = (estudiante + 1);
+            vecinos_aux[2] = (estudiante + 1);
+            contador_vecinos_validos++;
         }
+        if (contador_vecinos_validos == 0){
+            return null;}
 
-        //nice n sweet
+        int[] vecinos = new int[contador_vecinos_validos];
+        int indice_pasaje = 0;
+        int i;
+        for (i = 0; i < vecinos_aux.length; i++){
+            if(vecinos_aux[i] != -1){
+                    vecinos[indice_pasaje] = vecinos_aux[i];
+                    indice_pasaje ++;
+            }
+
+            }
         return vecinos;
+        
+
     }
 
-    private int[] chequeoRtasVecinos(int copiador, int[] vecinos){
+    private int chequeoRtasVecinos(int copiador, int[] vecinos){ // O (R) porq son todas operaciones acotadas
         int copiado = -1;
         int max_rtas = -1;
         int[] examen_copiador = _estudiantes_por_id[copiador].obtenerExamen();
         for (int i = 0 ; i < vecinos.length;i++){ // O(1)
             int contador = 0;
-            int[] examen_vecino = _estudiantes_por_id[vecinos[i]].obtenerExamen(); // como accedo al examen del vecino (?)
+            int[] examen_vecino = _estudiantes_por_id[vecinos[i]].obtenerExamen();
             for (int j = 0 ; j < examen_vecino.length ; j++){
                 if(examen_vecino[j] != -1 && examen_copiador[j] == -1){
                     contador ++;
                 }
+            }
             if (contador > max_rtas){
                 copiado = vecinos[i];
                 max_rtas = contador;
             }
-
+            else if(contador == max_rtas) {
+                if (vecinos[i] > copiado){
+                    copiado = vecinos[i];
+                    max_rtas = contador;
+                }
             }
-
-
-
         }
-        return new int[0];
+        return copiado;
     }
 
 
