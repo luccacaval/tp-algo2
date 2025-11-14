@@ -24,7 +24,7 @@ public class MaxHeapAlumno{
     }
 
     @SuppressWarnings("unchecked")
-    public MaxHeapAlumno(int capacidad,int cantidadEjercicios){
+    public MaxHeapAlumno(int capacidad){
         //lo inicializamos vacio
         arrayHeap =  new Alumno[capacidad];
 

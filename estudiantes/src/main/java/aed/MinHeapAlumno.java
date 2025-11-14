@@ -2,7 +2,8 @@ package aed;
 
 public class MinHeapAlumno {
     private Alumno[] arrayHeap;
-    int cantidadElementos;
+    private int[] alumnosPorId;
+    private int cantidadElementos;
 
     public class HandleHeap {
         private int posicion;
@@ -21,6 +22,10 @@ public class MinHeapAlumno {
             return this.valor.getExamen();
         }
 
+        public int obtenerId(){
+            return this.valor.getId();
+        }
+
         public void resolverEjercicio(int ejercicio, int respuesta,int[] _examen_canonico){
             int notaAnterior = obtenerNota();
             valor.resolverEjercicio(ejercicio, respuesta, _examen_canonico);
@@ -32,6 +37,7 @@ public class MinHeapAlumno {
 
         public void entregar(){
             valor.entregar();
+            this.posicion = siftDown(posicion);
         }
 
     }
@@ -39,14 +45,12 @@ public class MinHeapAlumno {
     @SuppressWarnings("unchecked")
     public MinHeapAlumno(int capacidad,int cantidadEjercicios){
         arrayHeap =  new Alumno[capacidad];
+        alumnosPorId = new int[capacidad];
         for (int i = 0;i<capacidad;i++){
             arrayHeap[i] = new Alumno(cantidadEjercicios, i);
+            alumnosPorId[i] = i;
         }
         this.cantidadElementos = capacidad;
-    }
-
-    public HandleHeap obtenerHandle(int pos){
-        return new HandleHeap(pos, arrayHeap[pos]);
     }
 
     private int obtenerPadre(int pos){
@@ -57,6 +61,10 @@ public class MinHeapAlumno {
         Alumno temp = this.arrayHeap[padre];
         this.arrayHeap[padre] = arrayHeap[hijo];
         this.arrayHeap[hijo] = temp;
+        
+        // Actualizar alumnosPorId
+        alumnosPorId[arrayHeap[padre].getId()] = padre;
+        alumnosPorId[arrayHeap[hijo].getId()] = hijo;
     }
 
     private int shiftUp(int nuevoElemento){
@@ -109,7 +117,10 @@ public class MinHeapAlumno {
             indiceHijo = indiceHijoMayorPrioridad(nuevoElemento);
         }
         return nuevoElemento;
+    }
 
+    public HandleHeap obtenerHandle(int idAlumno){
+        return new HandleHeap(alumnosPorId[idAlumno], arrayHeap[alumnosPorId[idAlumno]]);
     }
 
     private int indiceHijoMayorPrioridad(int pos){

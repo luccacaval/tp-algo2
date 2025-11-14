@@ -16,6 +16,13 @@ public class Alumno implements Comparable<Alumno>{
         this.entrego = false;
     }
 
+    public Alumno(int id,int[] examen,int nota,boolean entrego){
+        this.examen = examen;
+        this.id = id;
+        this.nota = nota;
+        this.entrego = entrego;
+    }
+
     public void resolverEjercicio(int ejercicio,int respuesta, int[] examenCanonico){
         this.examen[ejercicio] = respuesta;
         if (examenCanonico[ejercicio] == respuesta){
@@ -41,11 +48,7 @@ public class Alumno implements Comparable<Alumno>{
     }
 
     public int[] getExamen() {
-        int[] res = new int[examen.length];
-        for (Integer i = 0; i < examen.length; i++) {
-            res[i] = examen[i];
-        }
-        return res;
+        return this.examen;
     }
 
     public int getNota() {

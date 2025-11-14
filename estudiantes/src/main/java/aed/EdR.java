@@ -2,9 +2,10 @@ package aed;
 
 import java.util.ArrayList;
 
+
 public class EdR {
     private MinHeapAlumno _notas_de_estudiantes;
-    private MaxHeap<Alumno> _estudiantes_entregados;
+    private MaxHeapAlumno _estudiantes_entregados;
     private MinHeapAlumno.HandleHeap[] _estudiantes_por_id;
     private int _lado_aula;
     private int[] _examen_canonico;
@@ -149,17 +150,17 @@ public class EdR {
             }
         }
         for (int j = 0; j < n;j++){
-            Alumno alumnoActual = this._notas_de_estudiantes.desencolar();
-            int alumnoActualId = alumnoActual.getId();
-            int[] examenAnterior = alumnoActual.getExamen();
-            for (int k = 0;k<examenAnterior.length;k++){
+            Alumno alumnoActual = this._notas_de_estudiantes.desencolar(); // O(1)
+            int alumnoActualId = alumnoActual.getId(); //O(1)
+            int[] examenAnterior = alumnoActual.getExamen(); //O(1)
+            for (int k = 0;k<examenAnterior.length;k++){ //O(R)
                 if(examenAnterior[k] != -1){
                     this.respuestasPorEjercicio[k][examenAnterior[k]]--;
                 }
             }
-            alumnoActual.reemplazarExamen(examenDW);
-            alumnoActual.actualizarNota(notaExamenDW);
-            this._estudiantes_por_id[alumnoActualId] = this._notas_de_estudiantes.insertar(alumnoActual);
+            alumnoActual.reemplazarExamen(examenDW); // O(R)
+            alumnoActual.actualizarNota(notaExamenDW); //O(1)
+            this._estudiantes_por_id[alumnoActualId] = this._notas_de_estudiantes.insertar(alumnoActual); //O(log(K))
         }
     }
  
@@ -167,7 +168,9 @@ public class EdR {
 //-------------------------------------------------ENTREGAR-------------------------------------------------------------
 
     public void entregar(int estudiante) {
-        
+        MinHeapAlumno.HandleHeap entregador = this._estudiantes_por_id[estudiante];
+        entregador.entregar();
+        this._estudiantes_entregados.insertar(new Alumno(entregador.obtenerId(),entregador.obtenerExamen(),entregador.obtenerNota(),true));
     }
 
 //-----------------------------------------------------CORREGIR---------------------------------------------------------
@@ -209,7 +212,7 @@ public class EdR {
         for (int i = 0;i<cantidadEstudiantes;i++){
             _estudiantes_por_id[i] = _notas_de_estudiantes.obtenerHandle(i);
         }
-        _estudiantes_entregados = new MaxHeap<>(cantidadEstudiantes);
+        _estudiantes_entregados = new MaxHeapAlumno(cantidadEstudiantes);
         //esto no tarda O(E*R) ni en pedo
         //crear un heap con nodos.
         respuestasPorEjercicio = new int[examenCanonico.length][10];
