@@ -3,25 +3,23 @@ package aed;
 import java.util.ArrayList;
 
 
+
 public class EdR {
     private MinHeapAlumno _notas_de_estudiantes;
+    private int cantidadEstudiantes;
     private MaxHeapAlumno _estudiantes_entregados;
-    private MinHeapAlumno.HandleHeap[] _estudiantes_por_id;
     private int _lado_aula;
     private int[] _examen_canonico;
-    private int idActual; 
     private int[][] respuestasPorEjercicio;
+    private ArrayList<Integer> copiadoresId;
 
 //-------------------------------------------------NOTAS--------------------------------------------------------------------------
 
     public double[] notas(){
-        double[] res = new double[_estudiantes_por_id.length];
-        for(int i = 0;i<_estudiantes_por_id.length;i++){
-            if (_estudiantes_por_id[i] != null){
-                res[i] = _estudiantes_por_id[i].obtenerNota();
-            } else {
-                res[i] = 0;
-            }
+        double[] res = new double[cantidadEstudiantes];
+        for(int i = 0;i<cantidadEstudiantes;i++){
+            MinHeapAlumno.HandleHeap alumnoActual = this._notas_de_estudiantes.obtenerHandle(i);
+            res[i] = alumnoActual.obtenerNota();
         }
         return res;
     }
@@ -35,8 +33,8 @@ public class EdR {
             int pos_vecino_a_copiar = chequeoRtasVecinos(estudiante, vecinos); // O(R)
             if (pos_vecino_a_copiar != -1){ 
             //Busco el inciso que voy a copiar
-            int[] examen_vecino = _estudiantes_por_id[pos_vecino_a_copiar].obtenerExamen();
-            int[] examen_copiador = _estudiantes_por_id[estudiante].obtenerExamen();
+            int[] examen_vecino = this._notas_de_estudiantes.obtenerHandle(pos_vecino_a_copiar).obtenerExamen();
+            int[] examen_copiador = this._notas_de_estudiantes.obtenerHandle(estudiante).obtenerExamen();
             int inciso_a_copiar = -1;
             int j = 0;
             while (inciso_a_copiar == -1 && j < examen_copiador.length){ // O(R) PEOR CASO
@@ -53,7 +51,7 @@ public class EdR {
 
     private int[] hallarVecinos(int estudiante) { // O (1) porq son todas operaciones acotadas
         //Preguntar valen si el array en java cuando se inicializa , como se inicializaria
-        if (estudiante > _estudiantes_por_id.length || estudiante < 0) {
+        if (estudiante > cantidadEstudiantes || estudiante < 0) {
                 return null;
         }
         int contador_vecinos_validos = 0;
@@ -61,16 +59,15 @@ public class EdR {
                                     //java truca el cociente entre enteros
         int vecino_de_adelante = estudiante + _lado_aula/2;
 
-        if (vecino_de_adelante < _estudiantes_por_id.length &&
-            _estudiantes_por_id[vecino_de_adelante] != null) {
+        if (vecino_de_adelante < cantidadEstudiantes) {
             vecinos_aux[0] = vecino_de_adelante;
             contador_vecinos_validos++;
         }
-        if (estudiante - 1 >= 0 && _estudiantes_por_id[estudiante-1] != null) {
+        if (estudiante - 1 >= 0) {
             vecinos_aux[1] = (estudiante - 1);
             contador_vecinos_validos++;
         }
-        if (estudiante + 1 < _estudiantes_por_id.length && _estudiantes_por_id[estudiante+1] != null) {
+        if (estudiante + 1 < cantidadEstudiantes) {
             vecinos_aux[2] = (estudiante + 1);
             contador_vecinos_validos++;
         }
@@ -95,10 +92,10 @@ public class EdR {
     private int chequeoRtasVecinos(int copiador, int[] vecinos){ // O (R) porq son todas operaciones acotadas
         int copiado = -1;
         int max_rtas = -1;
-        int[] examen_copiador = _estudiantes_por_id[copiador].obtenerExamen();
+        int[] examen_copiador = _notas_de_estudiantes.obtenerHandle(copiador).obtenerExamen();
         for (int i = 0 ; i < vecinos.length;i++){ // O(1)
             int contador = 0;
-            int[] examen_vecino = _estudiantes_por_id[vecinos[i]].obtenerExamen();
+            int[] examen_vecino = _notas_de_estudiantes.obtenerHandle(vecinos[i]).obtenerExamen();
             for (int j = 0 ; j < examen_vecino.length ; j++){
                 if(examen_vecino[j] != -1 && examen_copiador[j] == -1){
                     contador ++;
@@ -126,15 +123,8 @@ public class EdR {
 
 
     public void resolver(int estudiante, int NroEjercicio, int res) {
-        if (_estudiantes_por_id[estudiante] == null){
-            Alumno alumnoActual = new Alumno(this._examen_canonico.length, this.idActual);
-            idActual++;
-            alumnoActual.resolverEjercicio(NroEjercicio, res, _examen_canonico);
-            this._estudiantes_por_id[estudiante] = this._notas_de_estudiantes.insertar(alumnoActual);
-        } else{
-            MinHeapAlumno.HandleHeap alumnoActual = _estudiantes_por_id[estudiante];
-            alumnoActual.resolverEjercicio(NroEjercicio, res, _examen_canonico);
-        }
+        MinHeapAlumno.HandleHeap alumnoActual = _notas_de_estudiantes.obtenerHandle(estudiante);
+        alumnoActual.resolverEjercicio(NroEjercicio, res, _examen_canonico);
         respuestasPorEjercicio[NroEjercicio][res] += 1;
     }
 
@@ -146,21 +136,27 @@ public class EdR {
         int notaExamenDW = 0;
         for (int i = 0;i<examenDW.length;i++){
             if(examenDW[i] == this._examen_canonico[i]){
-                notaExamenDW+= 10;
+                notaExamenDW += 100/this._examen_canonico.length;
             }
         }
+        Alumno[] copiadoresDW = new Alumno[n];
+        for (int m = 0;m<n;m++){
+            copiadoresDW[m] = this._notas_de_estudiantes.desencolar();
+        }
         for (int j = 0; j < n;j++){
-            Alumno alumnoActual = this._notas_de_estudiantes.desencolar(); // O(1)
-            int alumnoActualId = alumnoActual.getId(); //O(1)
+            Alumno alumnoActual = copiadoresDW[j]; // O(1) 
             int[] examenAnterior = alumnoActual.getExamen(); //O(1)
             for (int k = 0;k<examenAnterior.length;k++){ //O(R)
                 if(examenAnterior[k] != -1){
                     this.respuestasPorEjercicio[k][examenAnterior[k]]--;
                 }
             }
+            for(int l = 0;l<examenDW.length;l++){
+                respuestasPorEjercicio[l][examenDW[l]]++;
+            }
             alumnoActual.reemplazarExamen(examenDW); // O(R)
             alumnoActual.actualizarNota(notaExamenDW); //O(1)
-            this._estudiantes_por_id[alumnoActualId] = this._notas_de_estudiantes.insertar(alumnoActual); //O(log(K))
+            this._notas_de_estudiantes.insertar(alumnoActual); //O(log(K))
         }
     }
  
@@ -168,32 +164,62 @@ public class EdR {
 //-------------------------------------------------ENTREGAR-------------------------------------------------------------
 
     public void entregar(int estudiante) {
-        MinHeapAlumno.HandleHeap entregador = this._estudiantes_por_id[estudiante];
+        MinHeapAlumno.HandleHeap entregador = this._notas_de_estudiantes.obtenerHandle(estudiante);
         entregador.entregar();
-        this._estudiantes_entregados.insertar(new Alumno(entregador.obtenerId(),entregador.obtenerExamen(),entregador.obtenerNota(),true));
+        this._estudiantes_entregados.insertar(new AlumnoEntregado(entregador.obtenerId(), entregador.obtenerNota()));
     }
 
 //-----------------------------------------------------CORREGIR---------------------------------------------------------
 
     public NotaFinal[] corregir() {
-        throw new UnsupportedOperationException("Sin implementar");
+        ArrayList<NotaFinal> notas = new ArrayList<>(cantidadEstudiantes);
+        for (int i = 0;i<cantidadEstudiantes;i++){
+            AlumnoEntregado alumnoActual = this._estudiantes_entregados.desencolar();
+            if (!esCopiador(alumnoActual.getId())){
+               notas.add(new NotaFinal(alumnoActual.getNota(), alumnoActual.getId()));
+            } 
+        }
+        NotaFinal[] res = new NotaFinal[notas.size()];
+        for(int j = 0;j<notas.size();j++){
+            res[j] = notas.get(j);
+        }
+        return res;
     }
 
 //-------------------------------------------------------CHEQUEAR COPIAS-------------------------------------------------
 
+    private boolean esCopiador(int id) {
+        int i = 0;
+        while (i<copiadoresId.size()) {
+            int idActual = copiadoresId.get(i);
+            if(id == idActual){
+                return true;
+            }
+            i++;
+        }
+        return false;
+    }
+
     public int[] chequearCopias() {
-        ArrayList<Integer> copiones = new ArrayList<Integer>(_estudiantes_por_id.length);
-        for(int i = 0;i<this._estudiantes_por_id.length;i++){
-            int[] examen = this._estudiantes_por_id[i].obtenerExamen();
+        ArrayList<Integer> copiones = new ArrayList<Integer>(cantidadEstudiantes);
+        for(int i = 0;i<this.cantidadEstudiantes;i++){
+            MinHeapAlumno.HandleHeap alumnoActual = this._notas_de_estudiantes.obtenerHandle(i);
+            int[] examen = alumnoActual.obtenerExamen();
+            int id = alumnoActual.obtenerId();
             int j = 0;
             boolean esCopion = true;
+            boolean estaEnBlanco = true;
             while (esCopion && j<examen.length) {
-                if(respuestasPorEjercicio[j][examen[j]] / _estudiantes_por_id.length < 0.25){
-                    esCopion = false;
+                if(examen[j] != -1){
+                    estaEnBlanco = false;
+                    if (respuestasPorEjercicio[j][examen[j]] / (new Float(cantidadEstudiantes)) <= 0.25){
+                        esCopion = false;
+                    }
                 }
                 j++;
             }
-            if (esCopion){
+            if (esCopion && !estaEnBlanco){
+                copiadoresId.add(id);
                 copiones.add(i);
             }
         }
@@ -207,12 +233,10 @@ public class EdR {
 
     public EdR(int ladoAula, int cantidadEstudiantes, int[] examenCanonico) {
         //comprobar si entran los estudiantes en el aula de ladoAula;
-        _estudiantes_por_id = new MinHeapAlumno.HandleHeap[cantidadEstudiantes];
+        this.cantidadEstudiantes = cantidadEstudiantes;  
         _notas_de_estudiantes = new MinHeapAlumno(cantidadEstudiantes,examenCanonico.length);
-        for (int i = 0;i<cantidadEstudiantes;i++){
-            _estudiantes_por_id[i] = _notas_de_estudiantes.obtenerHandle(i);
-        }
         _estudiantes_entregados = new MaxHeapAlumno(cantidadEstudiantes);
+        copiadoresId = new ArrayList<>(cantidadEstudiantes);
         //esto no tarda O(E*R) ni en pedo
         //crear un heap con nodos.
         respuestasPorEjercicio = new int[examenCanonico.length][10];
@@ -223,14 +247,5 @@ public class EdR {
         _examen_canonico = examenCanonico;
 
     }
-
-    private void corregirEjercicio(int[] ExamenCanonico, Alumno alumno, int nroEjercicio, int rtaEjercicio){
-        if (ExamenCanonico[nroEjercicio] == rtaEjercicio){
-            alumno.actualizarNota(alumno.getNota() + 1);
-        }
-    }
-
-
-
 
 }

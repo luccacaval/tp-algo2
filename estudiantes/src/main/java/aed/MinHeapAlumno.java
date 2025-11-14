@@ -2,7 +2,7 @@ package aed;
 
 public class MinHeapAlumno {
     private Alumno[] arrayHeap;
-    private int[] alumnosPorId;
+    private int[] posicionAlumnosPorId;
     private int cantidadElementos;
 
     public class HandleHeap {
@@ -45,10 +45,10 @@ public class MinHeapAlumno {
     @SuppressWarnings("unchecked")
     public MinHeapAlumno(int capacidad,int cantidadEjercicios){
         arrayHeap =  new Alumno[capacidad];
-        alumnosPorId = new int[capacidad];
+        posicionAlumnosPorId = new int[capacidad];
         for (int i = 0;i<capacidad;i++){
             arrayHeap[i] = new Alumno(cantidadEjercicios, i);
-            alumnosPorId[i] = i;
+            posicionAlumnosPorId[i] = i;
         }
         this.cantidadElementos = capacidad;
     }
@@ -63,8 +63,8 @@ public class MinHeapAlumno {
         this.arrayHeap[hijo] = temp;
         
         // Actualizar alumnosPorId
-        alumnosPorId[arrayHeap[padre].getId()] = padre;
-        alumnosPorId[arrayHeap[hijo].getId()] = hijo;
+        posicionAlumnosPorId[arrayHeap[padre].getId()] = padre;
+        posicionAlumnosPorId[arrayHeap[hijo].getId()] = hijo;
     }
 
     private int shiftUp(int nuevoElemento){
@@ -77,18 +77,16 @@ public class MinHeapAlumno {
         return nuevoElemento;
     }
 
-    public HandleHeap insertar(Alumno valor){
+    public void insertar(Alumno valor){
         if (cantidadElementos >= arrayHeap.length) {
             throw new IllegalStateException("Heap is full");
         }
-        
+        this.posicionAlumnosPorId[valor.getId()] = cantidadElementos;
         this.arrayHeap[cantidadElementos] = valor;
-        int posicionActual = cantidadElementos;
         if(cantidadElementos != 0){
-           posicionActual = shiftUp(cantidadElementos);
+           shiftUp(cantidadElementos);
         }
         cantidadElementos++;
-        return new HandleHeap(posicionActual, valor);
     }
 
         public Alumno desencolar() {
@@ -100,8 +98,10 @@ public class MinHeapAlumno {
         }
 
         Alumno res = arrayHeap[0];
+        posicionAlumnosPorId[res.getId()] = -1;
         Alumno ultimoInsertado = arrayHeap[cantidadElementos-1];
         arrayHeap[0] = ultimoInsertado;
+        posicionAlumnosPorId[ultimoInsertado.getId()] = 0;
         arrayHeap[cantidadElementos - 1] = null;
         cantidadElementos--;
         
@@ -120,7 +120,7 @@ public class MinHeapAlumno {
     }
 
     public HandleHeap obtenerHandle(int idAlumno){
-        return new HandleHeap(alumnosPorId[idAlumno], arrayHeap[alumnosPorId[idAlumno]]);
+        return new HandleHeap(posicionAlumnosPorId[idAlumno], arrayHeap[posicionAlumnosPorId[idAlumno]]);
     }
 
     private int indiceHijoMayorPrioridad(int pos){

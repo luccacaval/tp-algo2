@@ -26,7 +26,7 @@ public class Alumno implements Comparable<Alumno>{
     public void resolverEjercicio(int ejercicio,int respuesta, int[] examenCanonico){
         this.examen[ejercicio] = respuesta;
         if (examenCanonico[ejercicio] == respuesta){
-            this.nota += 10;
+            this.nota += 100/examenCanonico.length;
         }
     }
 
