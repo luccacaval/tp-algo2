@@ -8,13 +8,9 @@ public class MaxHeap <T extends Comparable<T>>{
         int posicion;
         T valor;
         
-        private HandleHeap(int posicion,T valor){
+        private HandleHeap(int posicion, T valor){
             this.posicion = posicion;
             this.valor = valor;
-        }
-
-        public void restaurarInv(){
-            siftUp(this.posicion);
         }
     }
 
@@ -34,16 +30,33 @@ public class MaxHeap <T extends Comparable<T>>{
         this.arrayHeap[hijo] = temp;
     }
 
-    private void siftUp(int nuevoElemento){
+    private void restaurarInvariante(int nuevoElemento){
         int padre = obtenerPadre(nuevoElemento);
         while (padre >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[padre]) > 0) {
-            intercambiar(padre, nuevoElemento);
+            intercambiar(nuevoElemento, padre);
             nuevoElemento = padre;
             padre = obtenerPadre(nuevoElemento);
         }
     }
 
+    public HandleHeap insertar(T valor){
+        if (cantidadElementos >= arrayHeap.length) {
+            throw new IllegalStateException("Heap is full");
+        }
+        
+        this.arrayHeap[cantidadElementos] = valor;
+        int posicionActual = cantidadElementos;
+        if(cantidadElementos != 0){
+            restaurarInvariante(cantidadElementos);
+        }
+        cantidadElementos++;
+        return new HandleHeap(posicionActual, valor);
+    }
+
     public T desencolar() {
+        if(cantidadElementos == 0){
+            return null;
+        }
         if(cantidadElementos == 1){
             T res = arrayHeap[0];
             arrayHeap[0] = null;
@@ -82,7 +95,7 @@ public class MaxHeap <T extends Comparable<T>>{
             } else {
                 return ((2 * pos) + 2);
             }
-        } else if  (existeIzquierdo && !existeDerecho) {
+        } else if (existeIzquierdo && !existeDerecho) {
             return ((2 * pos) + 1);
         } else if (!existeIzquierdo && existeDerecho) {
             return ((2 * pos) + 2);
@@ -91,32 +104,22 @@ public class MaxHeap <T extends Comparable<T>>{
         }
     }
 
-    public HandleHeap insertar(T valor){
-        if (cantidadElementos >= arrayHeap.length) {
-            throw new IllegalStateException("Heap is full");
+    public boolean esHeapValido(){
+        for (int i = 0; i < cantidadElementos; i++) {
+            int hijoIzquierdo = (2 * i) + 1;
+            int hijoDerecho = (2 * i) + 2;
+            
+            if (hijoIzquierdo < cantidadElementos) {
+                if (arrayHeap[i].compareTo(arrayHeap[hijoIzquierdo]) < 0) {
+                    return false;
+                }
+            }
+            if (hijoDerecho < cantidadElementos) {
+                if (arrayHeap[i].compareTo(arrayHeap[hijoDerecho]) < 0) {
+                    return false;
+                }
+            }
         }
-        
-        this.arrayHeap[cantidadElementos] = valor;
-        int posicionActual = cantidadElementos;
-        siftUp(cantidadElementos);
-        cantidadElementos++;
-        return new HandleHeap(posicionActual, valor);
+        return true;
     }
-
-    //testing
-    public static void main(String[] args) {
-        int NVALORES = 10;
-        MaxHeap<Integer> heap = new MaxHeap<>(NVALORES);
-        Integer[] ejemplo = {20,10,15,8,7,13,14,2,5,6};
-        for (int i = 0; i < NVALORES; i++) {
-            heap.insertar(ejemplo[i]);
-        }
-
-        while (heap.cantidadElementos > 0){
-            System.out.println(heap.desencolar());
-        }
-    }
-
-    
-
 }

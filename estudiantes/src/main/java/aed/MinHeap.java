@@ -54,6 +54,9 @@ public class MinHeap <T extends Comparable<T>>{
     }
 
         public T desencolar() {
+        if (cantidadElementos == 0){
+            return null;
+        }
         if(cantidadElementos == 1){
             T res = arrayHeap[0];
             arrayHeap[0] = null;
@@ -100,6 +103,26 @@ public class MinHeap <T extends Comparable<T>>{
             return -1;
         }
     }
-//testing
+
+    public boolean esHeapValido(){
+        for (int i = 0; i < cantidadElementos; i++) {
+            int hijoIzquierdo = (2 * i) + 1;
+            int hijoDerecho = (2 * i) + 2;
+            
+            if (hijoIzquierdo < cantidadElementos) {
+                if (arrayHeap[i].compareTo(arrayHeap[hijoIzquierdo]) > 0) {
+                    return false;
+                }
+            }
+            if (hijoDerecho < cantidadElementos) {
+                if (arrayHeap[i].compareTo(arrayHeap[hijoDerecho]) > 0) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+// Funciones para testing
     
 }

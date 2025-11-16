@@ -963,22 +963,272 @@ class EdrTests {
         assertTrue(Arrays.equals(notas_finales_esperadas, notas_finales));
         }
 
-        @Test
-            void heapValido() {
-                d_aula = 4;
-                cant_alumnos = 3;
-                solucion = new int[]{0,1,2,3,4,5,6,7,8,9};
-
-                edr = new EdR(d_aula, cant_alumnos, solucion);
-                
-                //MinHeapAlumno heap =  new MinHeapAlumno(cant_alumnos, solucion.length);
-
-                Alumno[] arrayHeapEsperado =  new Alumno[cant_alumnos];
-                for (int i = 0;i<cant_alumnos;i++){
-                    arrayHeapEsperado[i] = new Alumno(solucion.length, i);
-                }
-
-                assertTrue(arrayHeapEsperado.equals(edr.getNotas()));
-            }
+    @Test
+    void minHeapVacio(){
+        MinHeap<Integer> heap = new MinHeap<>(5);
+        Integer elemento = heap.desencolar();
+        assertNull(elemento);
     }
+
+    @Test
+    void minHeapInsertarUnElemento(){
+        MinHeap<Integer> heap = new MinHeap<>(5);
+        heap.insertar(5);
+        Integer elemento = heap.desencolar();
+        assertEquals(5, elemento);
+    }
+
+    @Test
+    void minHeapInsertarMultiplesElementos(){
+        MinHeap<Integer> heap = new MinHeap<>(5);
+        heap.insertar(5);
+        heap.insertar(3);
+        heap.insertar(7);
+        heap.insertar(1);
+        
+        assertEquals(1, heap.desencolar());
+        assertEquals(3, heap.desencolar());
+        assertEquals(5, heap.desencolar());
+        assertEquals(7, heap.desencolar());
+    }
+
+    @Test
+    void minHeapOrdenMenorAMayor(){
+        MinHeap<Integer> heap = new MinHeap<>(10);
+        int[] valores = {9, 5, 2, 8, 1, 7, 3, 6, 4, 0};
+        
+        for (int v : valores) {
+            heap.insertar(v);
+        }
+        
+        for (int i = 0; i < 10; i++) {
+            assertEquals(i, heap.desencolar());
+        }
+    }
+
+    @Test
+    void minHeapValidoAntesYDespues(){
+        MinHeap<Integer> heap = new MinHeap<>(10);
+        int[] valores = {50, 30, 70, 20, 80, 10, 90};
+        
+        assertTrue(heap.esHeapValido());
+        
+        for (int v : valores) {
+            heap.insertar(v);
+            assertTrue(heap.esHeapValido(), "El heap debe ser válido después de cada inserción");
+        }
+        
+        while (heap.desencolar() != null) {
+            assertTrue(heap.esHeapValido(), "El heap debe ser válido después de cada desencolar");
+        }
+    }
+
+    @Test
+    void minHeapLleno(){
+        MinHeap<Integer> heap = new MinHeap<>(3);
+        heap.insertar(1);
+        heap.insertar(2);
+        heap.insertar(3);
+        
+        assertThrows(IllegalStateException.class, () -> heap.insertar(4));
+    }
+
+    @Test
+    void minHeapElementosRepetidos(){
+        MinHeap<Integer> heap = new MinHeap<>(5);
+        heap.insertar(5);
+        heap.insertar(5);
+        heap.insertar(5);
+        
+        assertEquals(5, heap.desencolar());
+        assertEquals(5, heap.desencolar());
+        assertEquals(5, heap.desencolar());
+    }
+
+    @Test
+    void minHeapConStrings(){
+        MinHeap<String> heap = new MinHeap<>(5);
+        heap.insertar("perro");
+        heap.insertar("gato");
+        heap.insertar("ardilla");
+        heap.insertar("zebra");
+        
+        assertEquals("ardilla", heap.desencolar());
+        assertEquals("gato", heap.desencolar());
+        assertEquals("perro", heap.desencolar());
+        assertEquals("zebra", heap.desencolar());
+    }
+
+    @Test
+    void minHeapIntercalado(){
+        MinHeap<Integer> heap = new MinHeap<>(10);
+        heap.insertar(10);
+        heap.insertar(5);
+        assertEquals(5, heap.desencolar());
+        
+        heap.insertar(3);
+        heap.insertar(8);
+        assertEquals(3, heap.desencolar());
+        assertEquals(8, heap.desencolar());
+        assertEquals(10, heap.desencolar());
+    }
+
+    // ==================== MAX HEAP TESTS ====================
+    
+    @Test
+    void maxHeapVacio(){
+        MaxHeap<Integer> heap = new MaxHeap<>(5);
+        Integer elemento = heap.desencolar();
+        assertNull(elemento);
+    }
+
+    @Test
+    void maxHeapInsertarUnElemento(){
+        MaxHeap<Integer> heap = new MaxHeap<>(5);
+        heap.insertar(5);
+        Integer elemento = heap.desencolar();
+        assertEquals(5, elemento);
+    }
+
+    @Test
+    void maxHeapInsertarMultiplesElementos(){
+        MaxHeap<Integer> heap = new MaxHeap<>(5);
+        heap.insertar(5);
+        heap.insertar(3);
+        heap.insertar(7);
+        heap.insertar(1);
+        
+        assertEquals(7, heap.desencolar());
+        assertEquals(5, heap.desencolar());
+        assertEquals(3, heap.desencolar());
+        assertEquals(1, heap.desencolar());
+    }
+
+    @Test
+    void maxHeapOrdenMayorAMenor(){
+        MaxHeap<Integer> heap = new MaxHeap<>(10);
+        int[] valores = {9, 5, 2, 8, 1, 7, 3, 6, 4, 0};
+        
+        for (int v : valores) {
+            heap.insertar(v);
+        }
+        
+        for (int i = 9; i >= 0; i--) {
+            assertEquals(i, heap.desencolar());
+        }
+    }
+
+    @Test
+    void maxHeapValidoAntesYDespues(){
+        MaxHeap<Integer> heap = new MaxHeap<>(10);
+        int[] valores = {50, 30, 70, 20, 80, 10, 90};
+        
+        assertTrue(heap.esHeapValido());
+        
+        for (int v : valores) {
+            heap.insertar(v);
+            assertTrue(heap.esHeapValido(), "El heap debe ser válido después de cada inserción");
+        }
+        
+        while (heap.desencolar() != null) {
+            assertTrue(heap.esHeapValido(), "El heap debe ser válido después de cada desencolar");
+        }
+    }
+
+    @Test
+    void maxHeapLleno(){
+        MaxHeap<Integer> heap = new MaxHeap<>(3);
+        heap.insertar(1);
+        heap.insertar(2);
+        heap.insertar(3);
+        
+        assertThrows(IllegalStateException.class, () -> heap.insertar(4));
+    }
+
+    @Test
+    void maxHeapElementosRepetidos(){
+        MaxHeap<Integer> heap = new MaxHeap<>(5);
+        heap.insertar(5);
+        heap.insertar(5);
+        heap.insertar(5);
+        
+        assertEquals(5, heap.desencolar());
+        assertEquals(5, heap.desencolar());
+        assertEquals(5, heap.desencolar());
+    }
+
+    @Test
+    void maxHeapConStrings(){
+        MaxHeap<String> heap = new MaxHeap<>(5);
+        heap.insertar("perro");
+        heap.insertar("gato");
+        heap.insertar("ardilla");
+        heap.insertar("zebra");
+        
+        assertEquals("zebra", heap.desencolar());
+        assertEquals("perro", heap.desencolar());
+        assertEquals("gato", heap.desencolar());
+        assertEquals("ardilla", heap.desencolar());
+    }
+
+    @Test
+    void maxHeapIntercalado(){
+        MaxHeap<Integer> heap = new MaxHeap<>(10);
+        heap.insertar(10);
+        heap.insertar(5);
+        assertEquals(10, heap.desencolar());
+        
+        heap.insertar(3);
+        heap.insertar(8);
+        assertEquals(8, heap.desencolar());
+        assertEquals(5, heap.desencolar());
+        assertEquals(3, heap.desencolar());
+    }
+
+    // ==================== TESTS COMPARATIVOS ====================
+    
+    @Test
+    void minYMaxHeapComparación(){
+        MinHeap<Integer> minHeap = new MinHeap<>(5);
+        MaxHeap<Integer> maxHeap = new MaxHeap<>(5);
+        
+        int[] valores = {3, 1, 4, 1, 5};
+        for (int v : valores) {
+            minHeap.insertar(v);
+            maxHeap.insertar(v);
+        }
+        
+        // MinHeap da primero el menor
+        assertEquals(1, minHeap.desencolar());
+        // MaxHeap da primero el mayor
+        assertEquals(5, maxHeap.desencolar());
+    }
+
+    @Test
+    void minHeapGrande(){
+        MinHeap<Integer> heap = new MinHeap<>(100);
+        
+        for (int i = 99; i >= 0; i--) {
+            heap.insertar(i);
+        }
+        
+        for (int i = 0; i < 100; i++) {
+            assertEquals(i, heap.desencolar());
+        }
+    }
+
+    @Test
+    void maxHeapGrande(){
+        MaxHeap<Integer> heap = new MaxHeap<>(100);
+        
+        for (int i = 0; i < 100; i++) {
+            heap.insertar(i);
+        }
+        
+        for (int i = 99; i >= 0; i--) {
+            assertEquals(i, heap.desencolar());
+        }
+    }
+}
+
 
