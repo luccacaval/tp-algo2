@@ -55,6 +55,10 @@ public class Alumno implements Comparable<Alumno>{
         return this.nota;
     }
 
+    public boolean getEntrego(){
+        return this.entrego;
+    }
+
     public void actualizarNota(int nuevaNota) {
         this.nota = nuevaNota;
     }

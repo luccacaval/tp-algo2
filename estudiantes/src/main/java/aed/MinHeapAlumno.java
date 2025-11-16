@@ -22,6 +22,10 @@ public class MinHeapAlumno {
             return this.valor.getExamen();
         }
 
+        public boolean obtenerEntrego(){
+            return this.valor.getEntrego();
+        }
+
         public int obtenerId(){
             return this.valor.getId();
         }

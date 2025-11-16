@@ -1,5 +1,6 @@
 package aed;
 
+import java.security.InvalidAlgorithmParameterException;
 import java.util.ArrayList;
 
 
@@ -27,9 +28,12 @@ public class EdR {
 //------------------------------------------------COPIARSE------------------------------------------------------------------------
 
     public void copiarse(int estudiante) { 
+        MinHeapAlumno.HandleHeap alumnoActual = this._notas_de_estudiantes.obtenerHandle(estudiante);
+        if(alumnoActual.obtenerEntrego() == true){
+            return;
+        }
         int[] vecinos = hallarVecinos(estudiante); // O (1) porq son todas operaciones acotadas
         if( vecinos != null){ // Si es distinto a null osea hay gente para copiarse , llamo a una funcion para ver cual es el que tiene mas rtas
-            
             int pos_vecino_a_copiar = chequeoRtasVecinos(estudiante, vecinos); // O(R)
             if (pos_vecino_a_copiar != -1){ 
             //Busco el inciso que voy a copiar
@@ -82,7 +86,6 @@ public class EdR {
                     vecinos[indice_pasaje] = vecinos_aux[i];
                     indice_pasaje ++;
             }
-
             }
         return vecinos;
         
@@ -94,41 +97,40 @@ public class EdR {
         int max_rtas = -1;
         int[] examen_copiador = _notas_de_estudiantes.obtenerHandle(copiador).obtenerExamen();
         for (int i = 0 ; i < vecinos.length;i++){ // O(1)
-            int contador = 0;
-            int[] examen_vecino = _notas_de_estudiantes.obtenerHandle(vecinos[i]).obtenerExamen();
-            for (int j = 0 ; j < examen_vecino.length ; j++){
-                if(examen_vecino[j] != -1 && examen_copiador[j] == -1){
-                    contador ++;
+            boolean vecinoEntrego = _notas_de_estudiantes.obtenerHandle(vecinos[i]).obtenerEntrego();
+            if (vecinoEntrego != true){
+                int contador = 0;
+                int[] examen_vecino = _notas_de_estudiantes.obtenerHandle(vecinos[i]).obtenerExamen();
+                for (int j = 0 ; j < examen_vecino.length ; j++){
+                    if(examen_vecino[j] != -1 && examen_copiador[j] == -1){
+                        contador ++;
+                    }
                 }
-            }
-            if (contador > max_rtas){
-                copiado = vecinos[i];
-                max_rtas = contador;
-            }
-            else if(contador == max_rtas) {
-                if (vecinos[i] > copiado){
+                if (contador > max_rtas){
                     copiado = vecinos[i];
                     max_rtas = contador;
                 }
+                else if(contador == max_rtas) {
+                    if (vecinos[i] > copiado){
+                        copiado = vecinos[i];
+                        max_rtas = contador;
+                    }
+                }
             }
-        }
-        return copiado;
+            }
+            return copiado;
     }
-
-
 
 //-----------------------------------------------RESOLVER----------------------------------------------------------------
 
-
-
-
     public void resolver(int estudiante, int NroEjercicio, int res) {
         MinHeapAlumno.HandleHeap alumnoActual = _notas_de_estudiantes.obtenerHandle(estudiante);
+        if(alumnoActual.obtenerEntrego()==true){
+            return;
+        }else{
         alumnoActual.resolverEjercicio(NroEjercicio, res, _examen_canonico);
-        respuestasPorEjercicio[NroEjercicio][res] += 1;
+        respuestasPorEjercicio[NroEjercicio][res] += 1;}
     }
-
-
 
 //------------------------------------------------CONSULTAR DARK WEB-------------------------------------------------------
 
@@ -165,6 +167,9 @@ public class EdR {
 
     public void entregar(int estudiante) {
         MinHeapAlumno.HandleHeap entregador = this._notas_de_estudiantes.obtenerHandle(estudiante);
+        if (entregador.obtenerEntrego() == true){
+            return;
+        }
         entregador.entregar();
         this._estudiantes_entregados.insertar(new AlumnoEntregado(entregador.obtenerId(), entregador.obtenerNota()));
     }
@@ -172,6 +177,9 @@ public class EdR {
 //-----------------------------------------------------CORREGIR---------------------------------------------------------
 
     public NotaFinal[] corregir() {
+        if (this._estudiantes_entregados.getCantidadElementos()!=cantidadEstudiantes){
+            return new NotaFinal[]{};
+        }
         ArrayList<NotaFinal> notas = new ArrayList<>(cantidadEstudiantes);
         for (int i = 0;i<cantidadEstudiantes;i++){
             AlumnoEntregado alumnoActual = this._estudiantes_entregados.desencolar();
@@ -187,7 +195,6 @@ public class EdR {
     }
 
 //-------------------------------------------------------CHEQUEAR COPIAS-------------------------------------------------
-
     private boolean esCopiador(int id) {
         int i = 0;
         while (i<copiadoresId.size()) {
@@ -201,6 +208,10 @@ public class EdR {
     }
 
     public int[] chequearCopias() {
+        if (this._estudiantes_entregados.getCantidadElementos()!=cantidadEstudiantes){
+            return new int[]{};
+        }
+
         ArrayList<Integer> copiones = new ArrayList<Integer>(cantidadEstudiantes);
         for(int i = 0;i<this.cantidadEstudiantes;i++){
             MinHeapAlumno.HandleHeap alumnoActual = this._notas_de_estudiantes.obtenerHandle(i);
@@ -232,6 +243,20 @@ public class EdR {
 
 
     public EdR(int ladoAula, int cantidadEstudiantes, int[] examenCanonico) {
+        if(ladoAula <= 0 ){
+            throw new UnsupportedOperationException("El lado del aula debe ser mayor igual que 0");
+        }
+
+        else if (ladoAula % 2 == 0 && (ladoAula*ladoAula)/2 <= cantidadEstudiantes){
+            throw new UnsupportedOperationException("Los estudiante no entran en el aula");
+
+        }
+        else if (ladoAula % 2 != 0 && (ladoAula*(ladoAula + 1))/2 <= cantidadEstudiantes){
+            throw new UnsupportedOperationException("Los estudiante no entran en el aula");
+
+        }
+
+        _lado_aula = ladoAula/2;
         //comprobar si entran los estudiantes en el aula de ladoAula;
         this.cantidadEstudiantes = cantidadEstudiantes;  
         _notas_de_estudiantes = new MinHeapAlumno(cantidadEstudiantes,examenCanonico.length);
@@ -242,9 +267,9 @@ public class EdR {
         respuestasPorEjercicio = new int[examenCanonico.length][10];
         //hace mas facil los calculos tratar el aula como si no hubiera espacios:
         //se lleva mejor con el array.
-        _lado_aula = ladoAula/2;
         //a fin de cuentas, sabiendo que entran todos, dsps solo sirve para el array
         _examen_canonico = examenCanonico;
+        
 
     }
 

@@ -24,6 +24,10 @@ public class MaxHeapAlumno{
         this.arrayHeap[hijo] = temp;
     }
 
+    public int getCantidadElementos(){
+        return this.cantidadElementos;
+    }
+
     private int shiftUp(int nuevoElemento){
         int padre = obtenerPadre(nuevoElemento);
         while (padre >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[padre]) > 0) {
