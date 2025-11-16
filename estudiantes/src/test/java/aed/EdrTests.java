@@ -31,62 +31,6 @@ class EdrTests {
         assertTrue(Arrays.equals(notas_esperadas, notas));
     }
 
-    //Test 0 alumnos
-    @Test
-    void testEdrCeroAlumnos(){
-        int d_aula = 5;
-        int cant_alumnos = 0;
-        int [] solucion = new int[]{0,1,2,3,4,5,6,7,8,9};
-        EdR edr0 = new EdR(d_aula, cant_alumnos, solucion);
-
-       double[] notas = edr0.notas();
-       assertEquals(0, notas.length);
-
-       int[] copiones_esperados = edr0.chequearCopias();
-       assertEquals(0, copiones_esperados.length);
-
-       NotaFinal[] notas_finales = edr0.corregir();
-       assertEquals(0, notas_finales.length);
-    }
-
-    // Test lado invalido;
-
-    @Test
-    void testLadoInvalido(){
-        int d_aula = 0;
-        int cant_alumnos = 5;
-        int [] solucion = new int[]{0,1,2,3,4,5,6,7,8,9};
-        EdR edr0 = new EdR(d_aula, cant_alumnos, solucion);
-
-       double[] notas = edr0.notas();
-       assertEquals(0, notas.length);
-
-       int[] copiones_esperados = edr0.chequearCopias();
-       assertEquals(0, copiones_esperados.length);
-
-       NotaFinal[] notas_finales = edr0.corregir();
-       assertEquals(0, notas_finales.length);
-    }
-
-    @Test
-    void testLadoInvalidoYCantInvalida(){
-        int d_aula = 0;
-        int cant_alumnos = 0;
-        int [] solucion = new int[]{0,1,2,3,4,5,6,7,8,9};
-        EdR edr0 = new EdR(d_aula, cant_alumnos, solucion);
-
-       double[] notas = edr0.notas();
-       assertEquals(0, notas.length);
-
-       int[] copiones_esperados = edr0.chequearCopias();
-       assertEquals(0, copiones_esperados.length);
-
-       NotaFinal[] notas_finales = edr0.corregir();
-       assertEquals(0, notas_finales.length);
-    }
-
-
-    
     @Test
     void los_alumnos_resuelven_un_problema() {
         double[] notas;
@@ -409,141 +353,6 @@ class EdrTests {
 
     }
 
-    //Testing copiarse: No hay de quien copiarse.
-
-        @Test
-        void noHaydequienCopiarseEntregaron(){
-            edr = new EdR(5, 3, solucion); // ALUMNO - VACIO - ALUMNO - VACIO - ALUMNO 
-            double[] notas;
-            double[] notas_esperadas;
-
-            edr.resolver(0, 0, 0);
-            edr.resolver(1, 1, 1);
-            edr.resolver(2, 2, 2);
-
-            notas = edr.notas();
-            notas_esperadas = new double[]{10.0, 10.0, 10.0};
-            assertTrue(Arrays.equals(notas_esperadas, notas));
-
-            edr.entregar(0);
-            edr.entregar( 2);
-            edr.copiarse(1);
-
-            notas = edr.notas();
-            notas_esperadas = new double[]{10.0, 10.0, 10.0};
-            assertTrue(Arrays.equals(notas_esperadas, notas));
-
-            edr.entregar(1);
-
-            int[] copiones = edr.chequearCopias();
-            int[] copiones_esperados = new int[]{};
-            assertTrue(Arrays.equals(copiones_esperados, copiones));
-
-            NotaFinal[] notas_finales = edr.corregir();
-            NotaFinal[] notas_finales_esperadas = new NotaFinal[]{
-                new NotaFinal(10.0, 0),
-                new NotaFinal(10.0, 1),
-                new NotaFinal(10.0, 2)
-            };
-
-            assertTrue(Arrays.equals(notas_finales_esperadas, notas_finales));
-            }
-
-        @Test
-        void noHaydequienMismasRespuestas(){
-            edr = new EdR(5, 3, solucion); // ALUMNO - VACIO - ALUMNO - VACIO - ALUMNO 
-            double[] notas;
-            double[] notas_esperadas;
-
-            edr.resolver(0, 0,0);
-            edr.resolver(1, 0,1);
-            edr.resolver(2, 0, 2);
-
-            notas = edr.notas();
-            notas_esperadas = new double[]{10.0, 0.0, 0.0};
-            assertTrue(Arrays.equals(notas_esperadas, notas));
-
-            edr.entregar(0);
-            edr.entregar( 2);
-            edr.copiarse(1);
-
-            notas = edr.notas();
-            notas_esperadas = new double[]{10.0, 0.0, 0.0};
-            assertTrue(Arrays.equals(notas_esperadas, notas));
-
-            edr.entregar(1);
-
-            int[] copiones = edr.chequearCopias();
-            int[] copiones_esperados = new int[]{0,1,2};
-            assertTrue(Arrays.equals(copiones_esperados, copiones));
-
-            NotaFinal[] notas_finales = edr.corregir();
-            NotaFinal[] notas_finales_esperadas = new NotaFinal[]{};
-
-            assertTrue(Arrays.equals(notas_finales_esperadas, notas_finales));
-            }
-
-            
-        //Testing eleccion de copiarse
-
-        @Test
-        void seCopiaDelQueDebe(){
-            edr = new EdR(5, 3, solucion); // ALUMNO - VACIO - ALUMNO - VACIO - ALUMNO 
-            double[] notas;
-            double[] notas_esperadas;
-
-            //Se copia el alumno 1 , tiene como candidato el 0 y 2 pero el 2 tiene mas respuestas
-
-            edr.resolver(0, 0,5);
-            edr.resolver(0, 1,5);
-            edr.resolver(0, 2,5);
-            edr.resolver(0, 3,5);
-            edr.resolver(0, 4,5);
-
-            edr.resolver(2, 0,0);
-            edr.resolver(2, 1,9);
-            edr.resolver(2, 2,9);
-            edr.resolver(2, 3,9);
-            edr.resolver(2, 4,9);
-            edr.resolver(2, 5,9);
-
-            edr.copiarse(1);
-
-            notas = edr.notas();
-            notas_esperadas = new double[]{0.0, 10.0, 10.0};
-            assertTrue(Arrays.equals(notas_esperadas, notas));
-
-            edr.entregar(0);
-            edr.entregar(1);
-            edr.entregar(2);
-
-            int[] copiones = edr.chequearCopias();
-            int[] copiones_esperados = new int[]{1,2};
-            assertTrue(Arrays.equals(copiones_esperados, copiones));
-
-            NotaFinal[] notas_finales = edr.corregir();
-            NotaFinal[] notas_finales_esperadas = new NotaFinal[]{
-                new NotaFinal(0.0, 0),
-                new NotaFinal(0.0, 1),
-                new NotaFinal(10.0, 2)
-            };
-
-            assertTrue(Arrays.equals(notas_finales_esperadas, notas_finales));
-            }
-
-            
-
-
-
-
-
-
-
-
-
-
-
-
     @Test
     void alumnos_se_copian_mas_de_una_vez(){
         edr = new EdR(7, cant_alumnos, solucion);
@@ -819,4 +628,294 @@ class EdrTests {
 
         assertTrue(Arrays.equals(notas_finales_esperadas, notas_finales));
     }
+
+//----------------------------------------------------------------------------------------------------------------------------------------------------------------- 
+
+//TESTING NUESTRO
+    //TEST EDR
+    //Test 0 alumnos
+    @Test
+    void testEdrCeroAlumnos(){
+        int d_aula = 5;
+        int cant_alumnos = 0;
+        int [] solucion = new int[]{0,1,2,3,4,5,6,7,8,9};
+        EdR edr0 = new EdR(d_aula, cant_alumnos, solucion);
+
+       double[] notas = edr0.notas();
+       assertEquals(0, notas.length);
+
+       int[] copiones_esperados = edr0.chequearCopias();
+       assertEquals(0, copiones_esperados.length);
+
+       NotaFinal[] notas_finales = edr0.corregir();
+       assertEquals(0, notas_finales.length);
+    }
+
+    // Test lado invalido;
+
+    @Test
+    void testLadoInvalido(){
+        int d_aula = 0;
+        int cant_alumnos = 5;
+        int [] solucion = new int[]{0,1,2,3,4,5,6,7,8,9};
+        assertThrows(UnsupportedOperationException.class, () -> {
+            new EdR(d_aula, cant_alumnos, solucion);
+        });
+}
+
+    @Test
+    void testLadoInvalidoYCantInvalida(){
+        int d_aula = 1;
+        int cant_alumnos = 2;
+        int [] solucion = new int[]{0,1,2,3,4,5,6,7,8,9};
+        assertThrows(UnsupportedOperationException.class, () -> {
+            new EdR(d_aula, cant_alumnos, solucion);
+        });
+
+    }
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    //TEST COPIARSE
+
+    //Testing copiarse: No hay de quien copiarse.
+
+        @Test
+        void noHaydequienCopiarseEntregaron(){
+            edr = new EdR(5, 3, solucion); // ALUMNO - VACIO - ALUMNO - VACIO - ALUMNO 
+            double[] notas;
+            double[] notas_esperadas;
+
+            edr.resolver(0, 0, 0);
+            edr.resolver(1, 1, 1);
+            edr.resolver(2, 2, 2);
+
+            notas = edr.notas();
+            notas_esperadas = new double[]{10.0, 10.0, 10.0};
+            assertTrue(Arrays.equals(notas_esperadas, notas));
+
+            edr.entregar(0);
+            edr.entregar( 2);
+
+            int[] examen_antes_de_copiarse = edr.getExamen(1);
+            edr.copiarse(1);
+            int[] examen_despues_de_copiarse = edr.getExamen(1);
+            assertTrue(Arrays.equals(examen_antes_de_copiarse,examen_despues_de_copiarse));
+
+            notas = edr.notas();
+            notas_esperadas = new double[]{10.0, 10.0, 10.0};
+            assertTrue(Arrays.equals(notas_esperadas, notas));
+
+            }
+
+        @Test
+        void noHaydequienMismasRespuestas(){
+            edr = new EdR(5, 3, solucion); // ALUMNO - VACIO - ALUMNO - VACIO - ALUMNO 
+            double[] notas;
+            double[] notas_esperadas;
+
+            edr.resolver(0, 0,0);
+            edr.resolver(1, 0,1);
+            edr.resolver(2, 0, 2);
+
+            edr.copiarse(1);
+
+            int[] examen_antes_de_copiarse = edr.getExamen(1);
+            edr.copiarse(1);
+            int[] examen_despues_de_copiarse = edr.getExamen(1);
+            assertTrue(Arrays.equals(examen_antes_de_copiarse,examen_despues_de_copiarse));
+
+            notas = edr.notas();
+            notas_esperadas = new double[]{10.0, 0.0, 0.0};
+            assertTrue(Arrays.equals(notas_esperadas, notas));
+
+            }
+
+            
+        //Testing eleccion de copiarse
+
+        // Se copia del que mas respuestas tenga.
+        @Test
+        void seCopiaDelQueDebeMasRespuestas(){
+            edr = new EdR(5, 3, solucion); // ALUMNO - VACIO - ALUMNO - VACIO - ALUMNO 
+            double[] notas;
+            double[] notas_esperadas;
+
+            //Se copia el alumno 1 , tiene como candidato el 0 y 2 pero el 2 tiene mas respuestas
+
+            edr.resolver(0, 0,5);
+            edr.resolver(0, 1,5);
+            edr.resolver(0, 2,5);
+            edr.resolver(0, 3,5);
+            edr.resolver(0, 4,5);
+
+            edr.resolver(2, 0,0);
+            edr.resolver(2, 1,9);
+            edr.resolver(2, 2,9);
+            edr.resolver(2, 3,9);
+            edr.resolver(2, 4,9);
+            edr.resolver(2, 5,9);
+
+            edr.copiarse(1);
+            int[] examen_despues_de_copiarse = new int[]{0,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+
+            assertTrue(Arrays.equals(edr.getExamen(1),examen_despues_de_copiarse));
+
+            notas = edr.notas();
+            notas_esperadas = new double[]{0.0, 10.0, 10.0};
+            assertTrue(Arrays.equals(notas_esperadas, notas));
+
+            }
+
+        //Se copia del que tenga mayor id.
+
+        @Test
+        void seCopiaDelQueDebeMayorID(){
+            edr = new EdR(5, 3, solucion); // ALUMNO - VACIO - ALUMNO - VACIO - ALUMNO 
+            double[] notas;
+            double[] notas_esperadas;
+
+            //Mismas rtas mayor id el 2!
+
+            edr.resolver(0, 0,6);
+            edr.resolver(0, 1,6);
+            edr.resolver(0, 2,6);
+            edr.resolver(0, 3,6);
+            edr.resolver(0, 4,6);
+            edr.resolver(0, 5,6);
+
+            edr.resolver(2, 0,0);
+            edr.resolver(2, 1,9);
+            edr.resolver(2, 2,9);
+            edr.resolver(2, 3,9);
+            edr.resolver(2, 4,9);
+            edr.resolver(2, 5,9);
+
+            edr.copiarse(1);
+            int[] examen_despues_de_copiarse = new int[]{0,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+
+            assertTrue(Arrays.equals(edr.getExamen(1),examen_despues_de_copiarse));
+
+            notas = edr.notas();
+            notas_esperadas = new double[]{0.0, 10.0, 10.0};
+            assertTrue(Arrays.equals(notas_esperadas, notas));
+
+            }
+
+        @Test
+        void seCopiaDeElDeAdelante(){
+            edr = new EdR(2, 2, solucion); // ALUMNO - VACIO 
+                                                                        // ALUMNO - VACIO
+            double[] notas;
+            double[] notas_esperadas;
+
+            edr.resolver(0, 0,7);
+        
+            edr.copiarse(1);
+
+            int[] examen_despues_de_copiarse = new int[]{7,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+
+            assertTrue(Arrays.equals(edr.getExamen(1),examen_despues_de_copiarse));
+
+            notas = edr.notas();
+            notas_esperadas = new double[]{0.0, 0.0};
+            assertTrue(Arrays.equals(notas_esperadas, notas));
+
+            }
+
+        @Test
+        void elReydelaCopia(){ // se copia todo
+            edr = new EdR(2, 2, solucion); // ALUMNO - VACIO 
+                                                                        // ALUMNO - VACIO
+            double[] notas;
+            double[] notas_esperadas;
+
+            edr.resolver(0, 0,0);
+            edr.resolver(0, 1,1);
+            edr.resolver(0, 2,2);
+            edr.resolver(0, 3,3);
+            edr.resolver(0, 4,4);
+            edr.resolver(0, 5,5);
+            edr.resolver(0, 6,6);
+            edr.resolver(0, 7,7);
+            edr.resolver(0, 8,8);
+            edr.resolver(0, 9,9);
+        
+            edr.copiarse(1);
+            edr.copiarse(1);
+            edr.copiarse(1);
+            edr.copiarse(1);
+            edr.copiarse(1);
+            edr.copiarse(1);
+            edr.copiarse(1);
+            edr.copiarse(1);
+            edr.copiarse(1);
+            edr.copiarse(1);
+
+
+            int[] examen_despues_de_copiarse = new int[]{0,1,2,3,4,5,6,7,8,9};
+
+            assertTrue(Arrays.equals(edr.getExamen(1),examen_despues_de_copiarse));
+
+            notas = edr.notas();
+            notas_esperadas = new double[]{100.0, 100.0};
+            assertTrue(Arrays.equals(notas_esperadas, notas));
+            }
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//RESOLVER
+        
+@Test
+    void no_sobrescribe() { // Chequeamos que si tenia una respuesta que quede esa
+        double[] notas;
+        double[] notas_esperadas;
+
+        edr.resolver(0, 0, 0);
+        int[] examen_antes_de_resolver = (edr.getExamen(1));
+        notas = edr.notas();
+        notas_esperadas = new double[]{10.0, 0.0, 0.0, 0.0};
+        assertTrue(Arrays.equals(notas_esperadas, notas));
+
+        edr.resolver(0, 0, 9);
+
+        int[] examen_despues_de_resolver_la_misma = (edr.getExamen(1));
+        assertTrue(Arrays.equals(examen_antes_de_resolver, examen_despues_de_resolver_la_misma));
+
+    }
+
+@Test
+    void ejercicio_invalido() { // Resuelve un inciso invalido
+        double[] notas;
+        double[] notas_esperadas;
+
+        int[] examen_antes_de_resolver = (edr.getExamen(0));
+        notas = edr.notas();
+        notas_esperadas = new double[]{0.0, 0.0, 0.0, 0.0};
+        assertTrue(Arrays.equals(notas_esperadas, notas));
+
+        edr.resolver(0, 2025, 0);
+
+        int[] examen_despues_de_resolver_la_misma = (edr.getExamen(0));
+        assertTrue(Arrays.equals(examen_antes_de_resolver, examen_despues_de_resolver_la_misma));
+
+    }
+
+@Test
+    void inciso_invalido() { // Resuelve un inciso invalido
+        double[] notas;
+        double[] notas_esperadas;
+
+        int[] examen_antes_de_resolver = (edr.getExamen(0));
+        notas = edr.notas();
+        notas_esperadas = new double[]{0.0, 0.0, 0.0, 0.0};
+        assertTrue(Arrays.equals(notas_esperadas, notas));
+
+        edr.resolver(0, 0, 2025);
+
+        int[] examen_despues_de_resolver_la_misma = (edr.getExamen(0));
+        assertTrue(Arrays.equals(examen_antes_de_resolver, examen_despues_de_resolver_la_misma));}
+
+
+
+
 }

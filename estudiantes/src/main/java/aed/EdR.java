@@ -16,7 +16,7 @@ public class EdR {
 
 //-------------------------------------------------NOTAS--------------------------------------------------------------------------
 
-    public double[] notas(){
+    public double[] notas(){ 
         double[] res = new double[cantidadEstudiantes];
         for(int i = 0;i<cantidadEstudiantes;i++){
             MinHeapAlumno.HandleHeap alumnoActual = this._notas_de_estudiantes.obtenerHandle(i);
@@ -127,10 +127,24 @@ public class EdR {
         MinHeapAlumno.HandleHeap alumnoActual = _notas_de_estudiantes.obtenerHandle(estudiante);
         if(alumnoActual.obtenerEntrego()==true){
             return;
-        }else{
+        }
+        else if (NroEjercicio < 0 || NroEjercicio >= this._examen_canonico.length){
+            return;
+        }
+
+        else if (res < 0 || res > 9){
+            return;
+        }
+
+        else if (alumnoActual.obtenerExamen()[NroEjercicio] != -1){
+            return;
+        }
+
+        
+
         alumnoActual.resolverEjercicio(NroEjercicio, res, _examen_canonico);
         respuestasPorEjercicio[NroEjercicio][res] += 1;}
-    }
+    
 
 //------------------------------------------------CONSULTAR DARK WEB-------------------------------------------------------
 
@@ -162,7 +176,6 @@ public class EdR {
         }
     }
  
-
 //-------------------------------------------------ENTREGAR-------------------------------------------------------------
 
     public void entregar(int estudiante) {
@@ -247,11 +260,11 @@ public class EdR {
             throw new UnsupportedOperationException("El lado del aula debe ser mayor igual que 0");
         }
 
-        else if (ladoAula % 2 == 0 && (ladoAula*ladoAula)/2 <= cantidadEstudiantes){
+        else if (ladoAula % 2 == 0 && (ladoAula*ladoAula)/2 < cantidadEstudiantes){
             throw new UnsupportedOperationException("Los estudiante no entran en el aula");
 
         }
-        else if (ladoAula % 2 != 0 && (ladoAula*(ladoAula + 1))/2 <= cantidadEstudiantes){
+        else if (ladoAula % 2 != 0 && (ladoAula*(ladoAula + 1))/2 < cantidadEstudiantes){
             throw new UnsupportedOperationException("Los estudiante no entran en el aula");
 
         }
@@ -269,8 +282,13 @@ public class EdR {
         //se lleva mejor con el array.
         //a fin de cuentas, sabiendo que entran todos, dsps solo sirve para el array
         _examen_canonico = examenCanonico;
-        
+    }
 
+
+    // FUNCIONES PARA TESTING 
+
+    public int[] getExamen(int estudiante){
+        return this._notas_de_estudiantes.obtenerHandle(estudiante).obtenerExamen().clone();
     }
 
 }
