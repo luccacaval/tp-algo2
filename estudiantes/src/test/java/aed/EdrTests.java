@@ -961,6 +961,24 @@ class EdrTests {
         };
 
         assertTrue(Arrays.equals(notas_finales_esperadas, notas_finales));
-        
-}}
+        }
+
+        @Test
+            void heapValido() {
+                d_aula = 4;
+                cant_alumnos = 3;
+                solucion = new int[]{0,1,2,3,4,5,6,7,8,9};
+
+                edr = new EdR(d_aula, cant_alumnos, solucion);
+                
+                //MinHeapAlumno heap =  new MinHeapAlumno(cant_alumnos, solucion.length);
+
+                Alumno[] arrayHeapEsperado =  new Alumno[cant_alumnos];
+                for (int i = 0;i<cant_alumnos;i++){
+                    arrayHeapEsperado[i] = new Alumno(solucion.length, i);
+                }
+
+                assertTrue(arrayHeapEsperado.equals(edr.getNotas()));
+            }
+    }
 

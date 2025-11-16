@@ -149,4 +149,10 @@ public class MinHeapAlumno {
         }
     }
     
+    // FUNCIONES PARA TESTING 
+
+    public Alumno[] getHeap() {
+        return this.arrayHeap;
+    }
+
 }
