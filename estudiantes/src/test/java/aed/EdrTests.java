@@ -915,7 +915,52 @@ class EdrTests {
         int[] examen_despues_de_resolver_la_misma = (edr.getExamen(0));
         assertTrue(Arrays.equals(examen_antes_de_resolver, examen_despues_de_resolver_la_misma));}
 
+//----------------------------------------------------------------------------------------------------------------
+//Entrego
+@Test
+    void entrego() { // Chequeo que entregen y se desempate por id correctamente.
+        
+        double[] notas;
+        double[] notas_esperadas;
 
+        d_aula = 5;
+        cant_alumnos = 3;
+        solucion = new int[]{0,1,2,3,4,5,6,7,8,9};
 
+        edr = new EdR(d_aula, cant_alumnos, solucion);
 
-}
+        edr.resolver(0, 0, 0);
+        edr.resolver(0, 2, 0);
+        edr.resolver(1, 5, 5);
+        edr.resolver(1, 7, 7);
+        edr.resolver(2, 9, 9);
+        edr.resolver(2, 4, 4);
+        
+    
+        notas = edr.notas();
+        notas_esperadas = new double[]{10.0,20.0,20.0} ;
+        assertTrue(Arrays.equals(notas_esperadas, notas));
+
+        edr.entregar(0);
+        edr.entregar(1);
+        edr.entregar(2);
+        
+        boolean estudiante_0_entrego = edr.getEntrego(0);
+        boolean estudiante_1_entrego = edr.getEntrego(1);
+        boolean estudiante_2_entrego = edr.getEntrego(2);
+
+        assertTrue(estudiante_0_entrego);
+        assertTrue(estudiante_1_entrego);
+        assertTrue(estudiante_2_entrego);
+
+        NotaFinal[] notas_finales = edr.corregir();
+        NotaFinal[] notas_finales_esperadas = new NotaFinal[]{
+            new NotaFinal(20.0, 2),
+            new NotaFinal(20.0, 1),
+            new NotaFinal(10.0, 0),
+        };
+
+        assertTrue(Arrays.equals(notas_finales_esperadas, notas_finales));
+        
+}}
+

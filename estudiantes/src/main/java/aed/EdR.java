@@ -280,4 +280,8 @@ public class EdR {
         return this._notas_de_estudiantes.obtenerHandle(estudiante).obtenerExamen().clone();
     }
 
+    public boolean getEntrego (int estudiante){
+        return this._notas_de_estudiantes.obtenerHandle(estudiante).obtenerEntrego();
+    }
+
 }
