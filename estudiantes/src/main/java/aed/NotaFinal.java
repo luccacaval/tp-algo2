@@ -27,9 +27,10 @@ public class NotaFinal implements Comparable<NotaFinal> {
     
     @Override
     public int compareTo(NotaFinal otra){
-        if (otra._id != this._id){
+        if (Double.compare(this._nota, otra._nota) == 0){
             return this._id - otra._id;
+        } else{
+            return Double.compare(this._nota, otra._nota);
         }
-        return Double.compare(this._nota, otra._nota);
     }
 }

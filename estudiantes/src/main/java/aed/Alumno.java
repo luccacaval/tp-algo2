@@ -1,22 +1,22 @@
 package aed;
 
-public class Alumno implements Comparable<Alumno>{
+public class Alumno {
     private int[] examen;
-    private int nota;
+    private Handle<NotaFinal> nota; // DOCENTE hay un getNot y un actualizarNota, este atributo es esencialmente publico
     private int id;
-    private boolean entrego;
+    public boolean entrego;
 
-    public Alumno(int cantidadEjercicios, int id){
+    public Alumno(int cantidadEjercicios, int id, Handle<NotaFinal> nota){
         this.examen = new int[cantidadEjercicios];
         for (int i = 0; i < cantidadEjercicios; i++) {
             examen[i] = -1;
         }
-        int nota = 0;
+        this.nota = nota;
         this.id = id;
         this.entrego = false;
     }
 
-    public Alumno(int id,int[] examen,int nota,boolean entrego){
+    public Alumno(int id,int[] examen,Handle<NotaFinal> nota,boolean entrego){
         this.examen = examen;
         this.id = id;
         this.nota = nota;
@@ -24,10 +24,19 @@ public class Alumno implements Comparable<Alumno>{
     }
 
     public void resolverEjercicio(int ejercicio,int respuesta, int[] examenCanonico){
-        this.examen[ejercicio] = respuesta;
-        if (examenCanonico[ejercicio] == respuesta){
-            this.nota += 100/examenCanonico.length;
+        if (examen[ejercicio] == respuesta){
+            return;
         }
+        if(this.examen[ejercicio] == -1){
+            if(examenCanonico[ejercicio] == respuesta){
+                this.nota.valor._nota += 100/examenCanonico.length;
+            } 
+        } else{
+            if(this.examen[ejercicio] == examenCanonico[ejercicio]){
+                this.nota.valor._nota -= 100/examenCanonico.length;
+            }
+        }
+        this.examen[ejercicio] = respuesta;
     }
 
     public void entregar(){
@@ -47,41 +56,30 @@ public class Alumno implements Comparable<Alumno>{
         return this.id;
     }
 
-    public int[] getExamen() {
-        return this.examen;
+    public double getNota(){
+        return nota.valor._nota;
     }
 
-    public int getNota() {
-        return this.nota;
+    public int getPosicionNota(){
+        return nota.getPosicion();
+    }
+
+    public int[] getExamen() {
+        int[] res = new int[this.examen.length];
+        for(int i = 0;i<this.examen.length;i++){
+            res[i] = this.examen[i];
+        }
+        return res;
+        // DOCENTE: exponer ela tributo directametne generando aliasing es violar el encapsulamiento
     }
 
     public boolean getEntrego(){
         return this.entrego;
     }
 
-    public void actualizarNota(int nuevaNota) {
-        this.nota = nuevaNota;
+    public void actualizarPosicionNota(int nuevaPosicion) {
+        this.nota.posicion = nuevaPosicion;
     }
 
-@Override
-public int compareTo(Alumno alumno2) {
-    // Si uno entregó y el otro no, el que entregó tiene menor prioridad (va al final)
-    if (this.entrego && !alumno2.entrego) return 1;
-    if (!this.entrego && alumno2.entrego) return -1;
-    
-    // Si ambos entregaron o ambos no entregaron, comparar por nota
-    if (this.nota < alumno2.nota) return -1;
-    else if (this.nota > alumno2.nota) return 1;
-    else {
-        // Si las notas son iguales, desempatar por id
-        if (this.id < alumno2.id) {
-            return -1;
-        } else if (this.id > alumno2.id) {
-            return 1;
-        } else {
-            return 0;
-        }
-    }
-}
 }
 

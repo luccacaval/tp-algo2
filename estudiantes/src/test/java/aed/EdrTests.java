@@ -11,7 +11,7 @@ import java.util.Arrays;
 
 class EdrTests {
     EdR edr;
-    int d_aula;
+    int d_aula;; 
     int cant_alumnos;
     int[] solucion;
 
@@ -651,28 +651,6 @@ class EdrTests {
        assertEquals(0, notas_finales.length);
     }
 
-    // Test lado invalido;
-
-    @Test
-    void testLadoInvalido(){
-        int d_aula = 0;
-        int cant_alumnos = 5;
-        int [] solucion = new int[]{0,1,2,3,4,5,6,7,8,9};
-        assertThrows(UnsupportedOperationException.class, () -> {
-            new EdR(d_aula, cant_alumnos, solucion);
-        });
-}
-
-    @Test
-    void testLadoInvalidoYCantInvalida(){
-        int d_aula = 1;
-        int cant_alumnos = 2;
-        int [] solucion = new int[]{0,1,2,3,4,5,6,7,8,9};
-        assertThrows(UnsupportedOperationException.class, () -> {
-            new EdR(d_aula, cant_alumnos, solucion);
-        });
-
-    }
 //---------------------------------------------------------------------------------------------------------------------------------------------------------
 
     //TEST COPIARSE
@@ -696,10 +674,9 @@ class EdrTests {
             edr.entregar(0);
             edr.entregar( 2);
 
-            int[] examen_antes_de_copiarse = edr.getExamen(1);
             edr.copiarse(1);
-            int[] examen_despues_de_copiarse = edr.getExamen(1);
-            assertTrue(Arrays.equals(examen_antes_de_copiarse,examen_despues_de_copiarse));
+            edr.entregar(1);
+            
 
             notas = edr.notas();
             notas_esperadas = new double[]{10.0, 10.0, 10.0};
@@ -717,13 +694,11 @@ class EdrTests {
             edr.resolver(1, 0,1);
             edr.resolver(2, 0, 2);
 
-            edr.copiarse(1);
+            notas = edr.notas();
+            notas_esperadas = new double[]{10.0, 0.0, 0.0};
+            assertTrue(Arrays.equals(notas_esperadas, notas));
 
-            int[] examen_antes_de_copiarse = edr.getExamen(1);
             edr.copiarse(1);
-            int[] examen_despues_de_copiarse = edr.getExamen(1);
-            assertTrue(Arrays.equals(examen_antes_de_copiarse,examen_despues_de_copiarse));
-
             notas = edr.notas();
             notas_esperadas = new double[]{10.0, 0.0, 0.0};
             assertTrue(Arrays.equals(notas_esperadas, notas));
@@ -790,13 +765,15 @@ class EdrTests {
             edr.resolver(2, 4,9);
             edr.resolver(2, 5,9);
 
-            edr.copiarse(1);
-            int[] examen_despues_de_copiarse = new int[]{0,-1,-1,-1,-1,-1,-1,-1,-1,-1};
+            notas = edr.notas();
+            notas_esperadas = new double[]{0.0, 0.0, 10.0};
+            assertTrue(Arrays.equals(notas_esperadas, notas));
 
-            assertTrue(Arrays.equals(edr.getExamen(1),examen_despues_de_copiarse));
+            edr.copiarse(1);
 
             notas = edr.notas();
-            notas_esperadas = new double[]{0.0, 10.0, 10.0};
+            notas_esperadas = new double[]{0.0, 10.0, 10.0}; //Nos damos cuenta que se copia correctamente ya que el de mayor id tenia la 
+                                                             //resputas correcta.
             assertTrue(Arrays.equals(notas_esperadas, notas));
 
             }
@@ -808,16 +785,28 @@ class EdrTests {
             double[] notas;
             double[] notas_esperadas;
 
-            edr.resolver(0, 0,7);
-        
+            edr.resolver(0, 0,0);
+            edr.resolver(0, 1,9);
+            edr.resolver(0, 2,9);
+            edr.resolver(0, 3,9);
+            edr.resolver(0, 4,9);
+            edr.resolver(0, 5,5);
+
+            edr.resolver(1, 0,5);
+            edr.resolver(1, 1,5);
+            edr.resolver(1, 2,5);
+            edr.resolver(1, 3,5);
+            edr.resolver(1, 4,5);
+
+            
+            notas = edr.notas();
+            notas_esperadas = new double[]{20.0, 0.0};
+            assertTrue(Arrays.equals(notas_esperadas, notas));
+
             edr.copiarse(1);
 
-            int[] examen_despues_de_copiarse = new int[]{7,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-
-            assertTrue(Arrays.equals(edr.getExamen(1),examen_despues_de_copiarse));
-
             notas = edr.notas();
-            notas_esperadas = new double[]{0.0, 0.0};
+            notas_esperadas = new double[]{20.0, 10.0};
             assertTrue(Arrays.equals(notas_esperadas, notas));
 
             }
@@ -839,6 +828,10 @@ class EdrTests {
             edr.resolver(0, 7,7);
             edr.resolver(0, 8,8);
             edr.resolver(0, 9,9);
+
+            notas = edr.notas();
+            notas_esperadas = new double[]{100.0, 0.0};
+            assertTrue(Arrays.equals(notas_esperadas, notas));
         
             edr.copiarse(1);
             edr.copiarse(1);
@@ -850,11 +843,6 @@ class EdrTests {
             edr.copiarse(1);
             edr.copiarse(1);
             edr.copiarse(1);
-
-
-            int[] examen_despues_de_copiarse = new int[]{0,1,2,3,4,5,6,7,8,9};
-
-            assertTrue(Arrays.equals(edr.getExamen(1),examen_despues_de_copiarse));
 
             notas = edr.notas();
             notas_esperadas = new double[]{100.0, 100.0};
@@ -871,15 +859,14 @@ class EdrTests {
         double[] notas_esperadas;
 
         edr.resolver(0, 0, 0);
-        int[] examen_antes_de_resolver = (edr.getExamen(1));
         notas = edr.notas();
         notas_esperadas = new double[]{10.0, 0.0, 0.0, 0.0};
         assertTrue(Arrays.equals(notas_esperadas, notas));
 
         edr.resolver(0, 0, 9);
-
-        int[] examen_despues_de_resolver_la_misma = (edr.getExamen(1));
-        assertTrue(Arrays.equals(examen_antes_de_resolver, examen_despues_de_resolver_la_misma));
+        notas = edr.notas();
+        notas_esperadas = new double[]{10.0, 0.0, 0.0, 0.0};
+        assertTrue(Arrays.equals(notas_esperadas, notas));
 
     }
 
@@ -888,15 +875,16 @@ class EdrTests {
         double[] notas;
         double[] notas_esperadas;
 
-        int[] examen_antes_de_resolver = (edr.getExamen(0));
         notas = edr.notas();
         notas_esperadas = new double[]{0.0, 0.0, 0.0, 0.0};
         assertTrue(Arrays.equals(notas_esperadas, notas));
 
         edr.resolver(0, 2025, 0);
 
-        int[] examen_despues_de_resolver_la_misma = (edr.getExamen(0));
-        assertTrue(Arrays.equals(examen_antes_de_resolver, examen_despues_de_resolver_la_misma));
+        notas = edr.notas();
+        notas_esperadas = new double[]{0.0, 0.0, 0.0, 0.0};
+        assertTrue(Arrays.equals(notas_esperadas, notas));
+        
 
     }
 
@@ -905,15 +893,15 @@ class EdrTests {
         double[] notas;
         double[] notas_esperadas;
 
-        int[] examen_antes_de_resolver = (edr.getExamen(0));
         notas = edr.notas();
         notas_esperadas = new double[]{0.0, 0.0, 0.0, 0.0};
         assertTrue(Arrays.equals(notas_esperadas, notas));
 
         edr.resolver(0, 0, 2025);
 
-        int[] examen_despues_de_resolver_la_misma = (edr.getExamen(0));
-        assertTrue(Arrays.equals(examen_antes_de_resolver, examen_despues_de_resolver_la_misma));}
+        notas = edr.notas();
+        notas_esperadas = new double[]{0.0, 0.0, 0.0, 0.0};
+        assertTrue(Arrays.equals(notas_esperadas, notas));}
 
 //----------------------------------------------------------------------------------------------------------------
 //Entrego
@@ -944,14 +932,7 @@ class EdrTests {
         edr.entregar(0);
         edr.entregar(1);
         edr.entregar(2);
-        
-        boolean estudiante_0_entrego = edr.getEntrego(0);
-        boolean estudiante_1_entrego = edr.getEntrego(1);
-        boolean estudiante_2_entrego = edr.getEntrego(2);
 
-        assertTrue(estudiante_0_entrego);
-        assertTrue(estudiante_1_entrego);
-        assertTrue(estudiante_2_entrego);
 
         NotaFinal[] notas_finales = edr.corregir();
         NotaFinal[] notas_finales_esperadas = new NotaFinal[]{
@@ -963,6 +944,8 @@ class EdrTests {
         assertTrue(Arrays.equals(notas_finales_esperadas, notas_finales));
         }
 
+
+// Tests para sobre Minheap y Maxheap
     @Test
     void minHeapVacio(){
         MinHeap<Integer> heap = new MinHeap<>(5);

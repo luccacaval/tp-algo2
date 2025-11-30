@@ -14,6 +14,7 @@ public class MaxHeap <T extends Comparable<T>>{
         }
     }
 
+    // Preguntarle a Fermin por esto
     @SuppressWarnings("unchecked")
     public MaxHeap(int capacidad){
         arrayHeap = (T[]) new Comparable[capacidad];
@@ -30,14 +31,16 @@ public class MaxHeap <T extends Comparable<T>>{
         this.arrayHeap[hijo] = temp;
     }
 
-    private void restaurarInvariante(int nuevoElemento){
+private int shiftUp(int nuevoElemento){
         int padre = obtenerPadre(nuevoElemento);
         while (padre >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[padre]) > 0) {
             intercambiar(nuevoElemento, padre);
             nuevoElemento = padre;
             padre = obtenerPadre(nuevoElemento);
         }
+        return nuevoElemento;
     }
+
 
     public HandleHeap insertar(T valor){
         if (cantidadElementos >= arrayHeap.length) {
@@ -47,7 +50,7 @@ public class MaxHeap <T extends Comparable<T>>{
         this.arrayHeap[cantidadElementos] = valor;
         int posicionActual = cantidadElementos;
         if(cantidadElementos != 0){
-            restaurarInvariante(cantidadElementos);
+            shiftUp(cantidadElementos);
         }
         cantidadElementos++;
         return new HandleHeap(posicionActual, valor);
@@ -74,12 +77,14 @@ public class MaxHeap <T extends Comparable<T>>{
         return res;
     }
 
-    private void siftDown(int nuevoElemento){
+    private int siftDown(int nuevoElemento){
         int indiceHijo = indiceHijoMayorPrioridad(nuevoElemento);
-        while (indiceHijo > 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[indiceHijo]) < 0) {
+        while (indiceHijo >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[indiceHijo]) < 0) {
             intercambiar(indiceHijo, nuevoElemento);
-            siftDown(indiceHijo);
+            nuevoElemento = indiceHijo;
+            indiceHijo = indiceHijoMayorPrioridad(nuevoElemento);
         }
+        return nuevoElemento;
     }
 
     private int indiceHijoMayorPrioridad(int pos){
@@ -121,5 +126,9 @@ public class MaxHeap <T extends Comparable<T>>{
             }
         }
         return true;
+    }
+
+    public int getCantidadElementos() {
+        return this.cantidadElementos;
     }
 }

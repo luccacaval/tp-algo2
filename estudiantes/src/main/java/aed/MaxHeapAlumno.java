@@ -5,7 +5,6 @@ public class MaxHeapAlumno{
     int cantidadElementos;
 
 
-    @SuppressWarnings("unchecked")
     public MaxHeapAlumno(int capacidad){
         //lo inicializamos vacio
         arrayHeap =  new AlumnoEntregado[capacidad];
@@ -77,7 +76,6 @@ public class MaxHeapAlumno{
             indiceHijo = indiceHijoMayorPrioridad(nuevoElemento);
         }
         return nuevoElemento;
-
     }
 
     private int indiceHijoMayorPrioridad(int pos){

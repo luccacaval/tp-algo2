@@ -1,22 +1,35 @@
 package aed;
 
+import java.util.ArrayList;
+
 public class MinHeap <T extends Comparable<T>>{
     private T[] arrayHeap;
+    private HandleMinHeap[] handleArray;
     int cantidadElementos;
 
-    public class HandleHeap {
-        int posicion;
-        T valor;
+    public class HandleMinHeap implements Handle<T>{
+        public int posicion;
+        public T valor;
         
-        private HandleHeap(int posicion,T valor){
+        HandleMinHeap(int posicion,T valor){
             this.posicion = posicion;
             this.valor = valor;
         }
-    }
+
+        public int getPosicion(){
+            return posicion;
+        }
+
+
+        public void reemplazarValor(T nuevoValor){
+            this.valor = nuevoValor;
+        }
+}
 
     @SuppressWarnings("unchecked")
     public MinHeap(int capacidad){
         arrayHeap =  (T[]) new Comparable[capacidad];
+        handleArray = new ArrayList<>();
         this.cantidadElementos = 0;
     }
 
@@ -30,27 +43,30 @@ public class MinHeap <T extends Comparable<T>>{
         this.arrayHeap[hijo] = temp;
     }
 
-    private void restaurarInvariante(int nuevoElemento){
+    private int shiftUp(int nuevoElemento){
         int padre = obtenerPadre(nuevoElemento);
         while (padre >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[padre]) < 0) {
             intercambiar(nuevoElemento, padre);
             nuevoElemento = padre;
             padre = obtenerPadre(nuevoElemento);
         }
+        return nuevoElemento;
     }
 
-    public HandleHeap insertar(T valor){
+    public HandleMinHeap<T> insertar(T valor){
         if (cantidadElementos >= arrayHeap.length) {
-            throw new IllegalStateException("Heap is full");
+            throw new IllegalStateException("El heap esta lleno");
         }
         
         this.arrayHeap[cantidadElementos] = valor;
         int posicionActual = cantidadElementos;
         if(cantidadElementos != 0){
-            restaurarInvariante(cantidadElementos);
+            shiftUp(cantidadElementos);
         }
-        cantidadElementos++;
-        return new HandleHeap(posicionActual, valor);
+        HandleMinHeap<T> nuevoHandle = new HandleMinHeap<T>(posicionActual, valor);
+        handleArray[cantidadElementos] = nuevoHandle;
+        cantidadElementos++; 
+        return nuevoHandle;
     }
 
         public T desencolar() {
@@ -70,16 +86,18 @@ public class MinHeap <T extends Comparable<T>>{
         arrayHeap[cantidadElementos - 1] = null;
         cantidadElementos--;
         
-        siftDown(0);
+        shiftDown(0);
         return res;
     }
 
-    private void siftDown(int nuevoElemento){
+    private int shiftDown(int nuevoElemento){
         int indiceHijo = indiceHijoMayorPrioridad(nuevoElemento);
-        while (indiceHijo > 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[indiceHijo]) > 0) {
+        while (indiceHijo >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[indiceHijo]) > 0) {
             intercambiar(indiceHijo, nuevoElemento);
-            siftDown(indiceHijo);
+            nuevoElemento = indiceHijo;
+            indiceHijo = indiceHijoMayorPrioridad(nuevoElemento);
         }
+        return nuevoElemento;
     }
 
     private int indiceHijoMayorPrioridad(int pos){
@@ -123,6 +141,11 @@ public class MinHeap <T extends Comparable<T>>{
         return true;
     }
 
-// Funciones para testing
+    public int restaurarInvariante(int posicion){
+        int nuevaPosicion;
+        nuevaPosicion = shiftUp(posicion);
+        nuevaPosicion = shiftDown(posicion);
+        return nuevaPosicion;
+    }
     
 }
