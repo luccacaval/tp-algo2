@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class MinHeap <T extends Comparable<T>>{
     private T[] arrayHeap;
-    private HandleMinHeap[] handleArray;
+    private ArrayList<HandleMinHeap> handleArray;
     int cantidadElementos;
 
     public class HandleMinHeap implements Handle<T>{
@@ -29,7 +29,10 @@ public class MinHeap <T extends Comparable<T>>{
     @SuppressWarnings("unchecked")
     public MinHeap(int capacidad){
         arrayHeap =  (T[]) new Comparable[capacidad];
-        handleArray = new ArrayList<>();
+        handleArray = new ArrayList<HandleMinHeap>(capacidad);
+        for(int i = 0;i<capacidad;i++){
+            handleArray.add(null);
+        }
         this.cantidadElementos = 0;
     }
 
@@ -39,8 +42,13 @@ public class MinHeap <T extends Comparable<T>>{
 
     private void intercambiar(int padre, int hijo){
         T temp = this.arrayHeap[padre];
+        HandleMinHeap tempHandle = this.handleArray.get(padre);
         this.arrayHeap[padre] = arrayHeap[hijo];
+        this.handleArray.set(padre, handleArray.get(hijo));
         this.arrayHeap[hijo] = temp;
+        this.handleArray.set(hijo,tempHandle);
+        this.handleArray.get(hijo).posicion = padre;
+        this.handleArray.get(padre).posicion = hijo;
     }
 
     private int shiftUp(int nuevoElemento){
@@ -53,18 +61,17 @@ public class MinHeap <T extends Comparable<T>>{
         return nuevoElemento;
     }
 
-    public HandleMinHeap<T> insertar(T valor){
+    public HandleMinHeap insertar(T valor){
         if (cantidadElementos >= arrayHeap.length) {
             throw new IllegalStateException("El heap esta lleno");
         }
-        
         this.arrayHeap[cantidadElementos] = valor;
         int posicionActual = cantidadElementos;
+        HandleMinHeap nuevoHandle = new HandleMinHeap(posicionActual, valor);
+        handleArray.set(posicionActual, nuevoHandle);
         if(cantidadElementos != 0){
             shiftUp(cantidadElementos);
         }
-        HandleMinHeap<T> nuevoHandle = new HandleMinHeap<T>(posicionActual, valor);
-        handleArray[cantidadElementos] = nuevoHandle;
         cantidadElementos++; 
         return nuevoHandle;
     }

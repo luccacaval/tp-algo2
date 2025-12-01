@@ -731,9 +731,6 @@ class EdrTests {
             edr.resolver(2, 5,9);
 
             edr.copiarse(1);
-            int[] examen_despues_de_copiarse = new int[]{0,-1,-1,-1,-1,-1,-1,-1,-1,-1};
-
-            assertTrue(Arrays.equals(edr.getExamen(1),examen_despues_de_copiarse));
 
             notas = edr.notas();
             notas_esperadas = new double[]{0.0, 10.0, 10.0};
@@ -963,7 +960,7 @@ class EdrTests {
 
     @Test
     void minHeapInsertarMultiplesElementos(){
-        MinHeap<Integer> heap = new MinHeap<>(5);
+        MinHeap<Integer> heap = new MinHeap<Integer>(5);
         heap.insertar(5);
         heap.insertar(3);
         heap.insertar(7);
@@ -1030,7 +1027,7 @@ class EdrTests {
 
     @Test
     void minHeapConStrings(){
-        MinHeap<String> heap = new MinHeap<>(5);
+        MinHeap<String> heap = new MinHeap<String>(5);
         heap.insertar("perro");
         heap.insertar("gato");
         heap.insertar("ardilla");

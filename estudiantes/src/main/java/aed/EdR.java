@@ -177,7 +177,7 @@ public class EdR {
             for(int l = 0;l<examenDW.length;l++){
                 respuestasPorEjercicio[l][examenDW[l]]++;
             }
-            Handle<NotaFinal> handleNota = this.notasDeEstudiantes.insertar(new NotaFinal(notaExamenDW, alumnoActual.getId()));
+            MinHeap<NotaFinal>.HandleMinHeap handleNota = this.notasDeEstudiantes.insertar(new NotaFinal(notaExamenDW, alumnoActual.getId()));
             alumnosPorId[copiadoresDW[j]._id] = new Alumno(copiadoresDW[j]._id, examenDW, handleNota, false);
         }
     }
@@ -268,7 +268,7 @@ public class EdR {
         this.alumnosPorId = new Alumno[cantidadEstudiantes]; // O(E)
         this.notasDeEstudiantes = new MinHeap<NotaFinal>(cantidadEstudiantes); // O(E)
         for(int i = 0; i < cantidadEstudiantes;i++){ // O(E)
-            Handle<NotaFinal> handleNota = notasDeEstudiantes.insertar(new NotaFinal(0, i)); // O(1) ya que no hay que hacer ningun shift
+            MinHeap<NotaFinal>.HandleMinHeap handleNota = notasDeEstudiantes.insertar(new NotaFinal(0, i)); // O(1) ya que no hay que hacer ningun shift
             alumnosPorId[i] = new Alumno(examenCanonico.length, i, handleNota);
         }
         this.estudiantesEntregados = new MaxHeap<AlumnoEntregado>(cantidadEstudiantes); // O(E)

@@ -2,11 +2,11 @@ package aed;
 
 public class Alumno {
     private int[] examen;
-    private Handle<NotaFinal> nota; // DOCENTE hay un getNot y un actualizarNota, este atributo es esencialmente publico
+    private MinHeap<NotaFinal>.HandleMinHeap nota; // DOCENTE hay un getNot y un actualizarNota, este atributo es esencialmente publico
     private int id;
     public boolean entrego;
 
-    public Alumno(int cantidadEjercicios, int id, Handle<NotaFinal> nota){
+    public Alumno(int cantidadEjercicios, int id, MinHeap<NotaFinal>.HandleMinHeap nota){
         this.examen = new int[cantidadEjercicios];
         for (int i = 0; i < cantidadEjercicios; i++) {
             examen[i] = -1;
@@ -16,7 +16,7 @@ public class Alumno {
         this.entrego = false;
     }
 
-    public Alumno(int id,int[] examen,Handle<NotaFinal> nota,boolean entrego){
+    public Alumno(int id,int[] examen,MinHeap<NotaFinal>.HandleMinHeap nota,boolean entrego){
         this.examen = examen;
         this.id = id;
         this.nota = nota;
