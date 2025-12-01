@@ -43,12 +43,14 @@ public class MinHeap <T extends Comparable<T>>{
     private void intercambiar(int padre, int hijo){
         T temp = this.arrayHeap[padre];
         HandleMinHeap tempHandle = this.handleArray.get(padre);
+        
         this.arrayHeap[padre] = arrayHeap[hijo];
         this.handleArray.set(padre, handleArray.get(hijo));
+        this.handleArray.get(padre).posicion = padre;
+        
         this.arrayHeap[hijo] = temp;
-        this.handleArray.set(hijo,tempHandle);
-        this.handleArray.get(hijo).posicion = padre;
-        this.handleArray.get(padre).posicion = hijo;
+        this.handleArray.set(hijo, tempHandle);
+        this.handleArray.get(hijo).posicion = hijo;
     }
 
     private int shiftUp(int nuevoElemento){
@@ -153,6 +155,36 @@ public class MinHeap <T extends Comparable<T>>{
         nuevaPosicion = shiftUp(posicion);
         nuevaPosicion = shiftDown(posicion);
         return nuevaPosicion;
+    }
+
+
+    public T eliminarElemento(int posicion){
+        
+        T elementoEliminado = arrayHeap[posicion];
+        
+        // Si es el último elemento, simplemente lo eliminamos
+        if (posicion == cantidadElementos - 1) {
+            arrayHeap[posicion] = null;
+            handleArray.set(posicion, null);
+            cantidadElementos--;
+            return elementoEliminado;
+        }
+        
+        // Reemplazar con el último elemento
+        T ultimoElemento = arrayHeap[cantidadElementos - 1];
+        arrayHeap[posicion] = ultimoElemento;
+        HandleMinHeap ultimoHandle = handleArray.get(cantidadElementos - 1);
+        handleArray.set(posicion, ultimoHandle);
+        ultimoHandle.posicion = posicion;
+        
+        arrayHeap[cantidadElementos - 1] = null;
+        handleArray.set(cantidadElementos - 1, null);
+        cantidadElementos--;
+        
+        // Restaurar el invariante: intentar subir, luego bajar
+        shiftDown(posicion);
+        
+        return elementoEliminado;
     }
     
 }

@@ -161,9 +161,6 @@ public class EdR {
         NotaFinal[] copiadoresDW = new NotaFinal[n];
         for (int m = 0;m<n;m++){
             NotaFinal posibleCopiador = this.notasDeEstudiantes.desencolar();
-            while(this.alumnosPorId[posibleCopiador._id].entrego){
-                posibleCopiador = this.notasDeEstudiantes.desencolar();
-            }
             copiadoresDW[m] = posibleCopiador; // O(1)
         }
         for (int j = 0; j < n;j++){
@@ -191,6 +188,7 @@ public class EdR {
         }
         entregador.entregar(); // O(log(E))
         this.estudiantesEntregados.insertar(new AlumnoEntregado(entregador.getId(), entregador.getNota())); // O(log(E))
+        this.notasDeEstudiantes.eliminarElemento(entregador.getPosicionNota());
     }
 
 //-----------------------------------------------------CORREGIR---------------------------------------------------------
@@ -276,15 +274,4 @@ public class EdR {
         this.respuestasPorEjercicio = new int[examenCanonico.length][10]; // O(R)
         this.examenCanonico = examenCanonico;
     }
-
-    public int[] getExamen(int i) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getExamen'");
-    }
-
-    public boolean getEntrego(int i) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getEntrego'");
-    }
-
 }
