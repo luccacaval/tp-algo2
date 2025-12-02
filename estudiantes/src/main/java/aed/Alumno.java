@@ -70,7 +70,6 @@ public class Alumno {
             res[i] = this.examen[i];
         }
         return res;
-        // DOCENTE: exponer ela tributo directametne generando aliasing es violar el encapsulamiento
     }
 
     public boolean getEntrego(){

@@ -53,7 +53,7 @@ public class MinHeap <T extends Comparable<T>>{
         this.handleArray.get(hijo).posicion = hijo;
     }
 
-    private int shiftUp(int nuevoElemento){
+    private int siftUp(int nuevoElemento){
         int padre = obtenerPadre(nuevoElemento);
         while (padre >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[padre]) < 0) {
             intercambiar(nuevoElemento, padre);
@@ -72,7 +72,7 @@ public class MinHeap <T extends Comparable<T>>{
         HandleMinHeap nuevoHandle = new HandleMinHeap(posicionActual, valor);
         handleArray.set(posicionActual, nuevoHandle);
         if(cantidadElementos != 0){
-            shiftUp(cantidadElementos);
+            siftUp(cantidadElementos);
         }
         cantidadElementos++; 
         return nuevoHandle;
@@ -95,11 +95,11 @@ public class MinHeap <T extends Comparable<T>>{
         arrayHeap[cantidadElementos - 1] = null;
         cantidadElementos--;
         
-        shiftDown(0);
+        siftDown(0);
         return res;
     }
 
-    private int shiftDown(int nuevoElemento){
+    private int siftDown(int nuevoElemento){
         int indiceHijo = indiceHijoMayorPrioridad(nuevoElemento);
         while (indiceHijo >= 0 && arrayHeap[nuevoElemento].compareTo(arrayHeap[indiceHijo]) > 0) {
             intercambiar(indiceHijo, nuevoElemento);
@@ -152,8 +152,8 @@ public class MinHeap <T extends Comparable<T>>{
 
     public int restaurarInvariante(int posicion){
         int nuevaPosicion;
-        nuevaPosicion = shiftUp(posicion);
-        nuevaPosicion = shiftDown(posicion);
+        nuevaPosicion = siftUp(posicion);
+        nuevaPosicion = siftDown(posicion);
         return nuevaPosicion;
     }
 
@@ -181,8 +181,8 @@ public class MinHeap <T extends Comparable<T>>{
         handleArray.set(cantidadElementos - 1, null);
         cantidadElementos--;
         
-        // Restaurar el invariante: intentar subir, luego bajar
-        shiftDown(posicion);
+        // Restaurar el invariante: siftDown
+        siftDown(posicion);
         
         return elementoEliminado;
     }
