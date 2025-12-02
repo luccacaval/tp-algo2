@@ -32,7 +32,7 @@ public class NotaFinal implements Comparable<NotaFinal> {
         }
         if (Double.compare(this._nota, otra._nota) == 0){
             return this._id - otra._id;
-        } else{
+        } else {
             return Double.compare(this._nota, otra._nota);
         }
     }

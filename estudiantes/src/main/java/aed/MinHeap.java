@@ -11,7 +11,7 @@ public class MinHeap <T extends Comparable<T>>{
         public int posicion;
         public T valor;
         
-        HandleMinHeap(int posicion,T valor){
+        HandleMinHeap(int posicion, T valor){
             this.posicion = posicion;
             this.valor = valor;
         }
@@ -20,12 +20,14 @@ public class MinHeap <T extends Comparable<T>>{
             return posicion;
         }
 
-
+        public T getValor() {
+            return valor;
+        }
         public void reemplazarValor(T nuevoValor){
             this.valor = nuevoValor;
         }
 }
-
+    //Para evitar el Warning del casteo en la linea 33
     @SuppressWarnings("unchecked")
     public MinHeap(int capacidad){
         arrayHeap =  (T[]) new Comparable[capacidad];
@@ -41,6 +43,9 @@ public class MinHeap <T extends Comparable<T>>{
     }
 
     private void intercambiar(int padre, int hijo){
+        //intercambiamos los valores T del arrayHeap
+        //junto con la posicion y valor de los handles de ambos 
+
         T temp = this.arrayHeap[padre];
         HandleMinHeap tempHandle = this.handleArray.get(padre);
         
@@ -67,11 +72,14 @@ public class MinHeap <T extends Comparable<T>>{
         if (cantidadElementos >= arrayHeap.length) {
             throw new IllegalStateException("El heap esta lleno");
         }
+
+
         this.arrayHeap[cantidadElementos] = valor;
         int posicionActual = cantidadElementos;
         HandleMinHeap nuevoHandle = new HandleMinHeap(posicionActual, valor);
         handleArray.set(posicionActual, nuevoHandle);
-        if(cantidadElementos != 0){
+
+        if (cantidadElementos != 0){
             siftUp(cantidadElementos);
         }
         cantidadElementos++; 
@@ -173,6 +181,7 @@ public class MinHeap <T extends Comparable<T>>{
         // Reemplazar con el último elemento
         T ultimoElemento = arrayHeap[cantidadElementos - 1];
         arrayHeap[posicion] = ultimoElemento;
+        
         HandleMinHeap ultimoHandle = handleArray.get(cantidadElementos - 1);
         handleArray.set(posicion, ultimoHandle);
         ultimoHandle.posicion = posicion;

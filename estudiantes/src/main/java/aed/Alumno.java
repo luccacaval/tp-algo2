@@ -16,7 +16,7 @@ public class Alumno {
         this.entrego = false;
     }
 
-    public Alumno(int id,int[] examen,MinHeap<NotaFinal>.HandleMinHeap nota,boolean entrego){
+    public Alumno(int id, int[] examen, MinHeap<NotaFinal>.HandleMinHeap nota, boolean entrego){
         this.examen = examen;
         this.id = id;
         this.nota = nota;
@@ -25,17 +25,24 @@ public class Alumno {
 
     public void resolverEjercicio(int ejercicio,int respuesta, int[] examenCanonico){
         if (examen[ejercicio] == respuesta){
+            //Si son iguales no cambiamos el examen
             return;
         }
-        if(this.examen[ejercicio] == -1){
-            if(examenCanonico[ejercicio] == respuesta){
-                this.nota.valor._nota += 100/examenCanonico.length;
+        NotaFinal nuevaNota = this.nota.getValor();
+        if (this.examen[ejercicio] == -1) {
+        //Si no habias respondido esta pregunta:
+            if (respuesta == examenCanonico[ejercicio]) {
+            //y la nueva respuesta es la correcta.
+                nuevaNota._nota += 100/examenCanonico.length;
             } 
-        } else{
-            if(this.examen[ejercicio] == examenCanonico[ejercicio]){
-                this.nota.valor._nota -= 100/examenCanonico.length;
+        } else {
+            //Si ya había respondido algo:
+            if (this.examen[ejercicio] == examenCanonico[ejercicio]){
+                //y esa respuesta era la correcta. (la nueva es necesariamente distinta).
+                nuevaNota._nota -= 100/examenCanonico.length;
             }
         }
+        this.nota.reemplazarValor(nuevaNota);
         this.examen[ejercicio] = respuesta;
     }
 
