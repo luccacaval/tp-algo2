@@ -13,7 +13,7 @@ public class EdR {
     private ArrayList<Integer> copiadoresId;
 
 
-    //----------------------------------------------CONSTRUCTOR--------------------------------------------------------------------------
+//----------------------------------------------CONSTRUCTOR--------------------------------------------------------------------------
 
     public EdR(int ladoAula, int cantidadEstudiantes, int[] examenCanonico) {
         _lado_aula = ladoAula;
@@ -76,28 +76,27 @@ public class EdR {
 
 //-----------------------------------------------RESOLVER----------------------------------------------------------------
 
-    public void resolver(int estudiante, int NroEjercicio, int res) {
+    public void resolver(int estudiante, int nroEjercicio, int res) {
         Alumno alumnoActual = this.alumnosPorId[estudiante]; // O(1)
         if(alumnoActual.entrego){ // O(1)
             return;
         }
-        else if (NroEjercicio < 0 || NroEjercicio >= this.examenCanonico.length){ // O(1)
+        else if (nroEjercicio < 0 || nroEjercicio >= this.examenCanonico.length){ // O(1)
             return;
         }
         else if (res < 0 || res > 9){ // O(1)
             return;
         }
-        else if (alumnoActual.getExamen()[NroEjercicio] != -1){ // O(1)
+        else if (alumnoActual.getExamen()[nroEjercicio] != -1){ // O(1)
             return;
         }
 
         //actualizamos nota en alumno
-        alumnoActual.resolverEjercicio(NroEjercicio, res, examenCanonico); // O(1)
-        int nuevaPosicion = notasDeEstudiantes.restaurarInvariante(alumnoActual.getPosicionNota());
-        alumnoActual.actualizarPosicionNota(nuevaPosicion);
-        respuestasPorEjercicio[NroEjercicio][res] += 1; // O(1)
+        alumnoActual.resolverEjercicio(nroEjercicio, res, examenCanonico); // O(1)
+        //int nuevaPosicion = notasDeEstudiantes.restaurarInvariante(alumnoActual.getPosicionNota());
+        //alumnoActual.actualizarPosicionNota(nuevaPosicion);
+        respuestasPorEjercicio[nroEjercicio][res] += 1; // O(1)
     }
-    
 
 //------------------------------------------------CONSULTAR DARK WEB-------------------------------------------------------
 

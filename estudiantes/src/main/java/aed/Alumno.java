@@ -64,7 +64,7 @@ public class Alumno {
     }
 
     public double getNota(){
-        return nota.valor._nota;
+        return nota.getValor()._nota;
     }
 
     public int getPosicionNota(){
@@ -84,7 +84,7 @@ public class Alumno {
     }
 
     public void actualizarPosicionNota(int nuevaPosicion) {
-        this.nota.posicion = nuevaPosicion;
+        this.nota.setPosicion(nuevaPosicion);
     }
 
 }

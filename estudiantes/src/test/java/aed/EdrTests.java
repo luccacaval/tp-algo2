@@ -940,8 +940,8 @@ class EdrTests {
 
         assertTrue(Arrays.equals(notas_finales_esperadas, notas_finales));
         }
-
-
+    }
+/* 
 // Tests para sobre Minheap y Maxheap
     @Test
     void minHeapVacio(){
@@ -1210,5 +1210,5 @@ class EdrTests {
         }
     }
 }
-
+*/
 

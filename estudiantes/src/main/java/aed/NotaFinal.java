@@ -1,6 +1,6 @@
 package aed;
 
-public class NotaFinal implements Comparable<NotaFinal> {
+public class NotaFinal implements ClonableYComparable<NotaFinal> {
     public double _nota;
     public int _id;
 
@@ -35,5 +35,11 @@ public class NotaFinal implements Comparable<NotaFinal> {
         } else {
             return Double.compare(this._nota, otra._nota);
         }
+    }
+
+    @Override
+    public NotaFinal clone() {
+        NotaFinal copia = new NotaFinal(this._nota, this._id);
+        return copia;
     }
 }

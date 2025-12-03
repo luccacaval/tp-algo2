@@ -2,30 +2,38 @@ package aed;
 
 import java.util.ArrayList;
 
-public class MinHeap <T extends Comparable<T>>{
+public class MinHeap <T extends ClonableYComparable<T>>{
     private T[] arrayHeap;
     private ArrayList<HandleMinHeap> handleArray;
     int cantidadElementos;
 
     public class HandleMinHeap implements Handle<T>{
-        public int posicion;
-        public T valor;
+        private int posicion;
+        private MinHeap<T> minHeapMadre;
+        //private T valor;
         
-        HandleMinHeap(int posicion, T valor){
+        //HandleMinHeap(int posicion, T valor) {
+        HandleMinHeap(MinHeap<T> minHeap, int posicion) {
             this.posicion = posicion;
-            this.valor = valor;
+            this.minHeapMadre = minHeap;
         }
 
         public int getPosicion(){
             return posicion;
         }
 
+        public void setPosicion(int nuevaPosicion) {
+            this.posicion = nuevaPosicion;
+        }
+
         public T getValor() {
-            return valor;
+            return minHeapMadre.getValorPorIndice(this.posicion);
         }
         public void reemplazarValor(T nuevoValor){
-            this.valor = nuevoValor;
-        }
+            //Actualiza posicion también, luego de cambiar el valor
+            int nuevaPosicion = minHeapMadre.setAt(posicion, nuevoValor);
+            this.posicion = nuevaPosicion;
+        } 
 }
     //Para evitar el Warning del casteo en la linea 33
     @SuppressWarnings("unchecked")
@@ -76,7 +84,7 @@ public class MinHeap <T extends Comparable<T>>{
 
         this.arrayHeap[cantidadElementos] = valor;
         int posicionActual = cantidadElementos;
-        HandleMinHeap nuevoHandle = new HandleMinHeap(posicionActual, valor);
+        HandleMinHeap nuevoHandle = new HandleMinHeap(this, posicionActual);
         handleArray.set(posicionActual, nuevoHandle);
 
         if (cantidadElementos != 0){
@@ -86,11 +94,11 @@ public class MinHeap <T extends Comparable<T>>{
         return nuevoHandle;
     }
 
-        public T desencolar() {
+    public T desencolar() {
         if (cantidadElementos == 0){
             return null;
         }
-        if(cantidadElementos == 1){
+        if (cantidadElementos == 1){
             T res = arrayHeap[0];
             arrayHeap[0] = null;
             cantidadElementos--;
@@ -170,7 +178,7 @@ public class MinHeap <T extends Comparable<T>>{
         
         T elementoEliminado = arrayHeap[posicion];
         
-        // Si es el último elemento, simplemente lo eliminamos
+        // Si es el último elemento, simplemente lo eliminamos.
         if (posicion == cantidadElementos - 1) {
             arrayHeap[posicion] = null;
             handleArray.set(posicion, null);
@@ -178,10 +186,10 @@ public class MinHeap <T extends Comparable<T>>{
             return elementoEliminado;
         }
         
-        // Reemplazar con el último elemento
+        // Reemplazar con el último elemento.
         T ultimoElemento = arrayHeap[cantidadElementos - 1];
         arrayHeap[posicion] = ultimoElemento;
-        
+
         HandleMinHeap ultimoHandle = handleArray.get(cantidadElementos - 1);
         handleArray.set(posicion, ultimoHandle);
         ultimoHandle.posicion = posicion;
@@ -190,10 +198,33 @@ public class MinHeap <T extends Comparable<T>>{
         handleArray.set(cantidadElementos - 1, null);
         cantidadElementos--;
         
-        // Restaurar el invariante: siftDown
         siftDown(posicion);
         
         return elementoEliminado;
     }
     
+//-------------------------------------------Metodos privados para el Handle------------------------------------------------
+
+private T getValorPorIndice(int posicion) {
+        if (posicion < 0 || posicion > cantidadElementos) {
+            return null;
+        }
+        //Nota: para no devolverlo por referencia,
+        //deberíamos pedir que T sea también Objeto (tenga método .clone).
+        return this.arrayHeap[posicion].clone();
+    }
+
+    private int setAt(int posicion, T nuevoValor) {
+        // Requiere 0 >= posicion > cantidadElementos
+        
+        if (arrayHeap[posicion] == nuevoValor) {
+            //Caso trivial
+            return posicion;
+        }
+        arrayHeap[posicion] = nuevoValor;
+        int nuevaPosicion = this.restaurarInvariante(posicion);
+
+        return nuevaPosicion;
+    }
+
 }
