@@ -69,7 +69,9 @@ public class EdR {
                     j++;
                 }
                 if (inciso_a_copiar != -1){
-                resolver(estudiante, inciso_a_copiar, examen_vecino[inciso_a_copiar]);} //O(log(E))
+                    //O(log(E))
+                    resolver(estudiante, inciso_a_copiar, examen_vecino[inciso_a_copiar]);
+                } 
             }
         }
     }
@@ -166,17 +168,6 @@ public class EdR {
     }
 
 //-------------------------------------------------------CHEQUEAR COPIAS-------------------------------------------------
-    private boolean esCopiador(int id) {
-        int i = 0;
-        while (i<copiadoresId.size()) {
-            int idActual = copiadoresId.get(i);
-            if(id == idActual){
-                return true;
-            }
-            i++;
-        }
-        return false;
-    }
 
     public int[] chequearCopias() {
         if (this.estudiantesEntregados.getCantidadElementos()!=cantidadEstudiantes){
@@ -282,5 +273,16 @@ public class EdR {
         return copiado;
     }
 
+    private boolean esCopiador(int id) {
+        int i = 0;
+        while (i<copiadoresId.size()) {
+            int idActual = copiadoresId.get(i);
+            if(id == idActual){
+                return true;
+            }
+            i++;
+        }
+        return false;
+    }
 
 }
