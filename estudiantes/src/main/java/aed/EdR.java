@@ -36,7 +36,7 @@ public class EdR {
 //-------------------------------------------------NOTAS--------------------------------------------------------------------------
 
     public double[] notas(){ 
-        double[] res = new double[cantidadEstudiantes];
+        double[] res = new double[cantidadEstudiantes]; //O(E)
         for(int i = 0;i<cantidadEstudiantes;i++){ // O(E)
             Alumno alumnoActual = this.alumnosPorId[i]; // O(1)
             res[i] = alumnoActual.getNota(); // O(1)
@@ -108,34 +108,34 @@ public class EdR {
 
 //------------------------------------------------CONSULTAR DARK WEB-------------------------------------------------------
 
-    public void consultarDarkWeb(int n, int[] examenDW) {
+    public void consultarDarkWeb(int k, int[] examenDW) {
         int notaExamenDW = 0;
         for (int i = 0;i<examenDW.length;i++){ //O(R)
             if(examenDW[i] == this.examenCanonico[i]){
                 notaExamenDW += 100/this.examenCanonico.length;
             }
         }
-        NotaFinal[] copiadoresDW = new NotaFinal[n];
+        NotaFinal[] copiadoresDW = new NotaFinal[k]; //O(k)
 
-        for (int m = 0;m<n;m++){
+        for (int m = 0;m<k;m++){
             NotaFinal posibleCopiador = this.notasDeEstudiantes.desencolar();
             copiadoresDW[m] = posibleCopiador; // O(1)
         }
-        for (int j = 0; j < n;j++){
+        for (int j = 0; j < k;j++){
             Alumno alumnoActual = this.alumnosPorId[copiadoresDW[j]._id]; // O(1) 
             int[] examenAnterior = alumnoActual.getExamen(); //O(1)
             
-            for (int k = 0;k<examenAnterior.length;k++){ //O(R)
-                if (examenAnterior[k] != -1){
-                    this.respuestasPorEjercicio[k][examenAnterior[k]]--;
+            for (int h = 0;h<examenAnterior.length;h++){ //O(R)
+                if (examenAnterior[h] != -1){
+                    this.respuestasPorEjercicio[h][examenAnterior[h]]--;
                 }
             }
             
-            for (int l = 0; l < examenDW.length; l++){
+            for (int l = 0; l < examenDW.length; l++){ //O(R)
                 respuestasPorEjercicio[l][examenDW[l]]++;
             }
             
-            MinHeap<NotaFinal>.HandleMinHeap handleNota = this.notasDeEstudiantes.insertar(new NotaFinal(notaExamenDW, alumnoActual.getId()));
+            MinHeap<NotaFinal>.HandleMinHeap handleNota = this.notasDeEstudiantes.insertar(new NotaFinal(notaExamenDW, alumnoActual.getId())); //O(1)
             alumnosPorId[copiadoresDW[j]._id] = new Alumno(copiadoresDW[j]._id, examenDW, handleNota, false);
         }
     }
@@ -149,7 +149,7 @@ public class EdR {
         }
         entregador.entregar(); // O(log(E))
         this.estudiantesEntregados.insertar(new AlumnoEntregado(entregador.getId(), entregador.getNota())); // O(log(E))
-        this.notasDeEstudiantes.eliminarElemento(entregador.getPosicionNota());
+        this.notasDeEstudiantes.eliminarElemento(entregador.getPosicionNota()); //O(log(E))
     }
 
 //-----------------------------------------------------CORREGIR---------------------------------------------------------
@@ -165,7 +165,7 @@ public class EdR {
                notas.add(new NotaFinal(alumnoActual.getNota(), alumnoActual.getId())); // O(1)
             } 
         }
-        NotaFinal[] res = new NotaFinal[notas.size()];
+        NotaFinal[] res = new NotaFinal[notas.size()]; //O(E)
         for(int j = 0;j<notas.size();j++){ // O(E)
             res[j] = notas.get(j);
         }
@@ -181,29 +181,29 @@ public class EdR {
 
         ArrayList<Integer> copiones = new ArrayList<Integer>(cantidadEstudiantes);
         for (int i = 0; i < this.cantidadEstudiantes; i++){ // O(E)
-            Alumno alumnoActual = this.alumnosPorId[i];
-            int[] examen = alumnoActual.getExamen();
-            int id = alumnoActual.getId();
+            Alumno alumnoActual = this.alumnosPorId[i]; //O(1)
+            int[] examen = alumnoActual.getExamen(); //O(1)
+            int id = alumnoActual.getId(); //O(1)
             int j = 0;
             boolean esCopion = true;
             boolean estaEnBlanco = true;
 
             while (esCopion && j < examen.length) { // O(R)
-                if(examen[j] != -1){
-                    estaEnBlanco = false;
-                    if (respuestasPorEjercicio[j][examen[j]] / (new Float(cantidadEstudiantes)) <= 0.25){
-                        esCopion = false;
+                if(examen[j] != -1){ //O(1)
+                    estaEnBlanco = false; //O(1)
+                    if (respuestasPorEjercicio[j][examen[j]] / (new Float(cantidadEstudiantes)) <= 0.25){ //O(1)
+                        esCopion = false; //O(1)
                     }
                 }
-                j++;
+                j++; //O(1)
             }
             if (esCopion && !estaEnBlanco){
-                copiadoresId.add(id);
-                copiones.add(i);
+                copiadoresId.add(id); //O(1) amortizado
+                copiones.add(i); //O(1) amortizado
             }
         }
-        int[] res = new int[copiones.size()];
-        for (int i = 0;i<copiones.size();i++){ // O(E)
+        int[] res = new int[copiones.size()]; //O(E) peor caso
+        for (int i = 0;i<copiones.size();i++){
             res[i] = copiones.get(i);
         }
         return res;
@@ -239,7 +239,7 @@ public class EdR {
         int indice_pasaje = 0;
         int i;
 
-        for (i = 0; i < vecinos_aux.length; i++){
+        for (i = 0; i < vecinos_aux.length; i++){ //O(1) pues max 3 copiones
             if(vecinos_aux[i] != -1){
                     vecinos[indice_pasaje] = vecinos_aux[i];
                     indice_pasaje ++;
@@ -251,13 +251,13 @@ public class EdR {
     private int chequeoRtasVecinos(int copiador, int[] vecinos){ // O(R) porq son todas operaciones acotadas
         int copiado = -1;
         int max_rtas = -1;
-        int[] examen_copiador = this.alumnosPorId[copiador].getExamen();
-        for (int i = 0 ; i < vecinos.length;i++){ // O(1)
+        int[] examen_copiador = this.alumnosPorId[copiador].getExamen(); //O(R)
+        for (int i = 0 ; i < vecinos.length;i++){ // O(3)
             Alumno vecinoActual = this.alumnosPorId[vecinos[i]];
             boolean vecinoEntrego = vecinoActual.entrego;
             if (!vecinoEntrego){
                 int contador = 0;
-                int[] examen_vecino = vecinoActual.getExamen();
+                int[] examen_vecino = vecinoActual.getExamen(); //O(R)
                 for (int j = 0 ; j < examen_vecino.length ; j++){
                     if (examen_vecino[j] != -1 && examen_copiador[j] == -1){
                         contador++;
@@ -280,7 +280,7 @@ public class EdR {
 
     private boolean esCopiador(int id) {
         int i = 0;
-        while (i<copiadoresId.size()) {
+        while (i<copiadoresId.size()) { //O(E)
             int idActual = copiadoresId.get(i);
             if(id == idActual){
                 return true;

@@ -2,7 +2,7 @@ package aed;
 
 public class Alumno {
     private int[] examen;
-    private MinHeap<NotaFinal>.HandleMinHeap nota; // DOCENTE hay un getNot y un actualizarNota, este atributo es esencialmente publico
+    private MinHeap<NotaFinal>.HandleMinHeap nota;
     private int id;
     public boolean entrego;
 
@@ -42,7 +42,6 @@ public class Alumno {
             }
         }
         this.examen[ejercicio] = respuesta;
-        return;
     }
 
     public void entregar(){
@@ -53,7 +52,7 @@ public class Alumno {
         if (this.examen.length != nuevoExamen.length){
             return;
         }
-        for (int i = 0;i<this.examen.length;i++){
+        for (int i = 0;i<this.examen.length;i++){ //O(R)
             this.examen[i] = nuevoExamen[i];
         }
     }
@@ -74,7 +73,7 @@ public class Alumno {
         return nota.getPosicion();
     }
 
-    public int[] getExamen() {
+    public int[] getExamen() { //O(R)
         int[] res = new int[this.examen.length];
         for(int i = 0;i<this.examen.length;i++){
             res[i] = this.examen[i];

@@ -1,8 +1,9 @@
 package aed;
 
 public class AlumnoEntregado implements Comparable<AlumnoEntregado>{
-    // DOCENTE: para qué hacen esta clase? La interfaz publica es mas pequeña que la de alumno. 
-    // No veo por qué simplemente no insertan instancias de Alumno es _estudiantes_entregados.
+    // Esta clase existe para poder desempatar por ID mayor, en vez de menor
+    // Pues la clase Alumno desempata por ID menor.
+
     private double nota;
     private int id;
 
@@ -18,7 +19,6 @@ public class AlumnoEntregado implements Comparable<AlumnoEntregado>{
     public int getId(){
         return id;
     }
-
     
 
     @Override
