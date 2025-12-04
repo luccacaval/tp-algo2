@@ -16,6 +16,11 @@ public class MinHeap <T extends Comparable<T>>{
             this.valor = valor;
         }
 
+        HandleMinHeap(int posicion, T valor, MinHeap<T> heap){
+            this.posicion = posicion;
+            this.valor = valor;
+        }
+
         public int getPosicion(){
             return posicion;
         }
@@ -86,7 +91,7 @@ public class MinHeap <T extends Comparable<T>>{
         return nuevoHandle;
     }
 
-        public T desencolar() {
+    public T desencolar() {
         if (cantidadElementos == 0){
             return null;
         }
@@ -195,5 +200,5 @@ public class MinHeap <T extends Comparable<T>>{
         
         return elementoEliminado;
     }
-    
+
 }

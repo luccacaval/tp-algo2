@@ -23,27 +23,26 @@ public class Alumno {
         this.entrego = entrego;
     }
 
-    public void resolverEjercicio(int ejercicio,int respuesta, int[] examenCanonico){
+    public void resolverEjercicio(int ejercicio, int respuesta, int[] examenCanonico, NotaFinal nf){
         if (examen[ejercicio] == respuesta){
             //Si son iguales no cambiamos el examen
             return;
         }
-        NotaFinal nuevaNota = this.nota.getValor();
         if (this.examen[ejercicio] == -1) {
         //Si no habias respondido esta pregunta:
             if (respuesta == examenCanonico[ejercicio]) {
             //y la nueva respuesta es la correcta.
-                nuevaNota._nota += 100/examenCanonico.length;
+                nf._nota += 100/examenCanonico.length;
             } 
         } else {
             //Si ya había respondido algo:
             if (this.examen[ejercicio] == examenCanonico[ejercicio]){
                 //y esa respuesta era la correcta. (la nueva es necesariamente distinta).
-                nuevaNota._nota -= 100/examenCanonico.length;
+                nf._nota -= 100/examenCanonico.length;
             }
         }
-        this.nota.reemplazarValor(nuevaNota);
         this.examen[ejercicio] = respuesta;
+        return;
     }
 
     public void entregar(){
@@ -65,6 +64,10 @@ public class Alumno {
 
     public double getNota(){
         return nota.valor._nota;
+    }
+
+    public void reemplazarNota(MinHeap<NotaFinal>.HandleMinHeap nuevoHandle) {
+        this.nota = nuevoHandle;
     }
 
     public int getPosicionNota(){

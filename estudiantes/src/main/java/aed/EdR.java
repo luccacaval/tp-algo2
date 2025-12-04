@@ -76,7 +76,7 @@ public class EdR {
         }
     }
 
-//-----------------------------------------------RESOLVER----------------------------------------------------------------
+//------------------------------------------------RESOLVER----------------------------------------------------------------
 
     public void resolver(int estudiante, int NroEjercicio, int res) {
         Alumno alumnoActual = this.alumnosPorId[estudiante]; // O(1)
@@ -93,10 +93,15 @@ public class EdR {
             return;
         }
 
-        //actualizamos nota en alumno
-        alumnoActual.resolverEjercicio(NroEjercicio, res, examenCanonico); // O(1)
-        int nuevaPosicion = notasDeEstudiantes.restaurarInvariante(alumnoActual.getPosicionNota());
-        alumnoActual.actualizarPosicionNota(nuevaPosicion);
+        NotaFinal nf = notasDeEstudiantes.eliminarElemento(alumnoActual.getPosicionNota()); //O(log(E))
+
+        //nf es inout -> se modifica el objeto.
+        alumnoActual.resolverEjercicio(NroEjercicio, res, examenCanonico, nf); // O(1)
+
+        MinHeap<NotaFinal>.HandleMinHeap nuevoHandle = notasDeEstudiantes.insertar(nf); //O(log(E))
+
+        alumnoActual.reemplazarNota(nuevoHandle); //O(1)
+
         respuestasPorEjercicio[NroEjercicio][res] += 1; // O(1)
     }
     
