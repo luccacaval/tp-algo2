@@ -16,7 +16,7 @@ public class EdR {
     //----------------------------------------------CONSTRUCTOR--------------------------------------------------------------------------
 
     public EdR(int ladoAula, int cantidadEstudiantes, int[] examenCanonico) {
-        _lado_aula = ladoAula;
+        _lado_aula = ladoAula/2; //faltaba esto aca 11/12
         this.cantidadEstudiantes = cantidadEstudiantes;
         this.alumnosPorId = new Alumno[cantidadEstudiantes]; // O(E)
         this.notasDeEstudiantes = new MinHeap<NotaFinal>(cantidadEstudiantes); // O(E)
@@ -31,17 +31,6 @@ public class EdR {
         this.copiadoresId = new ArrayList<>(cantidadEstudiantes); // O(E)
         this.respuestasPorEjercicio = new int[examenCanonico.length][10]; // O(R)
         this.examenCanonico = examenCanonico;
-    }
-
-//-------------------------------------------------NOTAS--------------------------------------------------------------------------
-
-    public double[] notas(){ 
-        double[] res = new double[cantidadEstudiantes]; //O(E)
-        for(int i = 0;i<cantidadEstudiantes;i++){ // O(E)
-            Alumno alumnoActual = this.alumnosPorId[i]; // O(1)
-            res[i] = alumnoActual.getNota(); // O(1)
-        }
-        return res;
     }
 
 //------------------------------------------------COPIARSE------------------------------------------------------------------------
@@ -63,7 +52,7 @@ public class EdR {
 
                 //Busco el inciso que voy a copiar
                 while (inciso_a_copiar == -1 && j < examen_copiador.length){ // O(R) PEOR CASO
-                    if(examen_copiador[j] == -1 && examen_vecino[j] != -1){
+                    if (examen_copiador[j] == -1 && examen_vecino[j] != -1){
                         inciso_a_copiar = j;
                     }
                     j++;
@@ -81,15 +70,19 @@ public class EdR {
     public void resolver(int estudiante, int NroEjercicio, int res) {
         Alumno alumnoActual = this.alumnosPorId[estudiante]; // O(1)
         if(alumnoActual.entrego){ // O(1)
+            //Caso ya entregó
             return;
         }
         else if (NroEjercicio < 0 || NroEjercicio >= this.examenCanonico.length){ // O(1)
+            //Caso ejercicio no válido
             return;
         }
         else if (res < 0 || res > 9){ // O(1)
+            //Caso respuesta no válida
             return;
         }
-        else if (alumnoActual.getExamen()[NroEjercicio] != -1){ // O(1)
+        else if (alumnoActual.getExamen()[NroEjercicio] != -1){ // O(R)
+            //Caso ejercicio ya respondido
             return;
         }
 
@@ -123,7 +116,7 @@ public class EdR {
         }
         for (int j = 0; j < k;j++){
             Alumno alumnoActual = this.alumnosPorId[copiadoresDW[j]._id]; // O(1) 
-            int[] examenAnterior = alumnoActual.getExamen(); //O(1)
+            int[] examenAnterior = alumnoActual.getExamen(); //O(R)
             
             for (int h = 0;h<examenAnterior.length;h++){ //O(R)
                 if (examenAnterior[h] != -1){
@@ -135,19 +128,30 @@ public class EdR {
                 respuestasPorEjercicio[l][examenDW[l]]++;
             }
             
-            MinHeap<NotaFinal>.HandleMinHeap handleNota = this.notasDeEstudiantes.insertar(new NotaFinal(notaExamenDW, alumnoActual.getId())); //O(1)
-            alumnosPorId[copiadoresDW[j]._id] = new Alumno(copiadoresDW[j]._id, examenDW, handleNota, false);
+            MinHeap<NotaFinal>.HandleMinHeap handleNota = this.notasDeEstudiantes.insertar(new NotaFinal(notaExamenDW, alumnoActual.getId())); //O(log(E))
+            alumnosPorId[copiadoresDW[j]._id] = new Alumno(copiadoresDW[j]._id, examenDW, handleNota, false); //O(1)
         }
     }
  
-//-----------------------------------------------------ENTREGAR-------------------------------------------------------------
+//------------------------------------------------------NOTAS---------------------------------------------------------------
+
+    public double[] notas(){ 
+        double[] res = new double[cantidadEstudiantes]; // O(E)
+        for(int i = 0;i<cantidadEstudiantes;i++){       // O(E)
+            Alumno alumnoActual = this.alumnosPorId[i];     // O(1)
+            res[i] = alumnoActual.getNota();                // O(1) 
+        }
+        return res;
+    }
+
+//-----------------------------------------------------ENTREGAR----------------------------------------------------------
 
     public void entregar(int estudiante) {
         Alumno entregador = this.alumnosPorId[estudiante];
         if (entregador.entrego == true){
             return;
         }
-        entregador.entregar(); // O(log(E))
+        entregador.entregar(); // O(1) 11/12
         this.estudiantesEntregados.insertar(new AlumnoEntregado(entregador.getId(), entregador.getNota())); // O(log(E))
         this.notasDeEstudiantes.eliminarElemento(entregador.getPosicionNota()); //O(log(E))
     }
@@ -160,7 +164,7 @@ public class EdR {
         }
         ArrayList<NotaFinal> notas = new ArrayList<>(cantidadEstudiantes);
         for (int i = 0; i < cantidadEstudiantes; i++){ // O(E)
-            AlumnoEntregado alumnoActual = this.estudiantesEntregados.desencolar(); // O(1)
+            AlumnoEntregado alumnoActual = this.estudiantesEntregados.desencolar(); // O(log(E))
             if (!esCopiador(alumnoActual.getId())){
                notas.add(new NotaFinal(alumnoActual.getNota(), alumnoActual.getId())); // O(1)
             } 
@@ -182,7 +186,7 @@ public class EdR {
         ArrayList<Integer> copiones = new ArrayList<Integer>(cantidadEstudiantes);
         for (int i = 0; i < this.cantidadEstudiantes; i++){ // O(E)
             Alumno alumnoActual = this.alumnosPorId[i]; //O(1)
-            int[] examen = alumnoActual.getExamen(); //O(1)
+            int[] examen = alumnoActual.getExamen(); //O(R)
             int id = alumnoActual.getId(); //O(1)
             int j = 0;
             boolean esCopion = true;
@@ -191,7 +195,8 @@ public class EdR {
             while (esCopion && j < examen.length) { // O(R)
                 if(examen[j] != -1){ //O(1)
                     estaEnBlanco = false; //O(1)
-                    if (respuestasPorEjercicio[j][examen[j]] / (new Float(cantidadEstudiantes)) <= 0.25){ //O(1)
+                    //                      > 1 para no dividir por cero ->                                     aca
+                    if (cantidadEstudiantes > 1 && respuestasPorEjercicio[j][examen[j]] / (new Float(cantidadEstudiantes)) <= 0.25){ //O(1)
                         esCopion = false; //O(1)
                     }
                 }

@@ -8,8 +8,8 @@ public class MinHeap <T extends Comparable<T>>{
     int cantidadElementos;
 
     public class HandleMinHeap implements Handle<T>{
-        public int posicion;
-        public T valor;
+        private int posicion;
+        private T valor;
         
         HandleMinHeap(int posicion, T valor){
             this.posicion = posicion;
@@ -25,6 +25,10 @@ public class MinHeap <T extends Comparable<T>>{
             return posicion;
         }
 
+        public void setPosicion(int pos) {
+            this.posicion = pos;
+        }
+
         public T getValor() {
             return valor;
         }
@@ -32,7 +36,7 @@ public class MinHeap <T extends Comparable<T>>{
             this.valor = nuevoValor;
         }
 }
-    //Para evitar el Warning del casteo en la linea 33
+    //Para evitar el Warning del casteo.
     @SuppressWarnings("unchecked")
     public MinHeap(int capacidad){
         arrayHeap =  (T[]) new Comparable[capacidad];
@@ -74,9 +78,8 @@ public class MinHeap <T extends Comparable<T>>{
     }
 
     public HandleMinHeap insertar(T valor){
-        if (cantidadElementos >= arrayHeap.length) {
-            throw new IllegalStateException("El heap esta lleno");
-        }
+        //Borramos error de heap lleno porque estaria incluido
+        //en el requiere 11/12 16:15
 
 
         this.arrayHeap[cantidadElementos] = valor;
@@ -162,14 +165,6 @@ public class MinHeap <T extends Comparable<T>>{
         }
         return true;
     }
-
-    public int restaurarInvariante(int posicion){
-        int nuevaPosicion;
-        nuevaPosicion = siftUp(posicion);
-        nuevaPosicion = siftDown(posicion);
-        return nuevaPosicion;
-    }
-
 
     public T eliminarElemento(int posicion){
         

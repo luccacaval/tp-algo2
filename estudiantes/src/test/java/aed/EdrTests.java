@@ -1004,16 +1004,6 @@ class EdrTests {
     }
 
     @Test
-    void minHeapLleno(){
-        MinHeap<Integer> heap = new MinHeap<>(3);
-        heap.insertar(1);
-        heap.insertar(2);
-        heap.insertar(3);
-        
-        assertThrows(IllegalStateException.class, () -> heap.insertar(4));
-    }
-
-    @Test
     void minHeapElementosRepetidos(){
         MinHeap<Integer> heap = new MinHeap<>(5);
         heap.insertar(5);
@@ -1113,16 +1103,6 @@ class EdrTests {
         while (heap.desencolar() != null) {
             assertTrue(heap.esHeapValido(), "El heap debe ser válido después de cada desencolar");
         }
-    }
-
-    @Test
-    void maxHeapLleno(){
-        MaxHeap<Integer> heap = new MaxHeap<>(3);
-        heap.insertar(1);
-        heap.insertar(2);
-        heap.insertar(3);
-        
-        assertThrows(IllegalStateException.class, () -> heap.insertar(4));
     }
 
     @Test

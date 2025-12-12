@@ -4,7 +4,7 @@ public class Alumno {
     private int[] examen;
     private MinHeap<NotaFinal>.HandleMinHeap nota;
     private int id;
-    public boolean entrego;
+    public boolean entrego; //lo fletamos? 11/12 16:11 
 
     public Alumno(int cantidadEjercicios, int id, MinHeap<NotaFinal>.HandleMinHeap nota){
         this.examen = new int[cantidadEjercicios];
@@ -62,7 +62,7 @@ public class Alumno {
     }
 
     public double getNota(){
-        return nota.valor._nota;
+        return nota.getValor()._nota;
     }
 
     public void reemplazarNota(MinHeap<NotaFinal>.HandleMinHeap nuevoHandle) {
@@ -86,7 +86,7 @@ public class Alumno {
     }
 
     public void actualizarPosicionNota(int nuevaPosicion) {
-        this.nota.posicion = nuevaPosicion;
+        this.nota.setPosicion(nuevaPosicion);
     }
 
 }

@@ -14,7 +14,8 @@ public class MaxHeap <T extends Comparable<T>>{
         }
     }
 
-    // Preguntarle a Fermin por esto
+    // Siguiente linea es para evitar warning sobre el casteo
+    // de Comparable[] a T[].
     @SuppressWarnings("unchecked")
     public MaxHeap(int capacidad){
         arrayHeap = (T[]) new Comparable[capacidad];
@@ -43,9 +44,7 @@ private int shiftUp(int nuevoElemento){
 
 
     public HandleHeap insertar(T valor){
-        if (cantidadElementos >= arrayHeap.length) {
-            throw new IllegalStateException("Heap is full");
-        }
+        //borramos el caso de heap lleno pues lo asumimos con el requiere 11/12
         
         this.arrayHeap[cantidadElementos] = valor;
         int posicionActual = cantidadElementos;
