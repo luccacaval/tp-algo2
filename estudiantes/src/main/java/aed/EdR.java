@@ -87,14 +87,13 @@ public class EdR {
         }
 
         NotaFinal nf = notasDeEstudiantes.eliminarElemento(alumnoActual.getPosicionNota()); //O(log(E))
-        int[] examenAlumno = alumnosPorId[estudiante].getExamen(); //O(R)
-        
-        //nf y examenAlumno son inout.
-        resolverEjercicio(NroEjercicio, res, examenAlumno, examenCanonico, nf); // O(1)
+
+        //nf es inout -> se modifica el objeto.
+        alumnoActual.resolverEjercicio(NroEjercicio, res, examenCanonico, nf); // O(1)
 
         MinHeap<NotaFinal>.HandleMinHeap nuevoHandle = notasDeEstudiantes.insertar(nf); //O(log(E))
 
-        alumnoActual.reemplazarExamenYNota(examenAlumno, nuevoHandle); //O(R)
+        alumnoActual.reemplazarNota(nuevoHandle); //O(1)
 
         respuestasPorEjercicio[NroEjercicio][res] += 1; // O(1)
     }
@@ -283,28 +282,6 @@ public class EdR {
         }
         return copiado;
     }
-
-    private void resolverEjercicio(int ejercicio, int respuesta, int[] examenAlumno, int[] examenCanonico, NotaFinal nf){
-        if (examenAlumno[ejercicio] == respuesta){
-            //Si son iguales no cambiamos el examen
-            return;
-        }
-        if (examenAlumno[ejercicio] == -1) {
-        //Si no habias respondido esta pregunta:
-            if (respuesta == examenCanonico[ejercicio]) {
-            //y la nueva respuesta es la correcta.
-                nf._nota += 100/examenCanonico.length;
-            } 
-        } else {
-            //Si ya había respondido algo:
-            if (examenAlumno[ejercicio] == examenCanonico[ejercicio]){
-                //y esa respuesta era la correcta. (la nueva es necesariamente distinta).
-                nf._nota -= 100/examenCanonico.length;
-            }
-        }
-        examenAlumno[ejercicio] = respuesta;
-    }
-
 
     private boolean esCopiador(int id) {
         int i = 0;
