@@ -2,12 +2,13 @@ package aed;
 
 import java.util.ArrayList;
 
-public class MinHeap <T extends Comparable<T>>{
+public class MinHeap <T extends CopiableYComparable>{
     private T[] arrayHeap;
     private ArrayList<HandleMinHeap> handleArray;
     int cantidadElementos;
 
-    public class HandleMinHeap implements Handle<T>{
+    public class HandleMinHeap implements Handle<T>
+    {
         private int posicion;
         private T valor;
         
@@ -30,7 +31,10 @@ public class MinHeap <T extends Comparable<T>>{
         }
 
         public T getValor() {
-            return valor;
+            @SuppressWarnings("unchecked")
+            //Hay warning en el casteo.
+            T res = (T) this.valor.copiar();
+            return res;
         }
         public void reemplazarValor(T nuevoValor){
             this.valor = nuevoValor;

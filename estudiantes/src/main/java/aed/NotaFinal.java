@@ -1,12 +1,16 @@
 package aed;
 
-public class NotaFinal implements Comparable<NotaFinal> {
+public class NotaFinal implements CopiableYComparable {
     public double _nota;
     public int _id;
 
     public NotaFinal(double nota, int id){
         _nota = nota;
         _id = id;
+    }
+
+    public NotaFinal copiar() {
+        return new NotaFinal(this._nota, this._id);
     }
 
     @Override
@@ -35,5 +39,11 @@ public class NotaFinal implements Comparable<NotaFinal> {
         } else {
             return Double.compare(this._nota, otra._nota);
         }
+    }
+
+    @Override
+    public int compareTo(CopiableYComparable o) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'compareTo'");
     }
 }
