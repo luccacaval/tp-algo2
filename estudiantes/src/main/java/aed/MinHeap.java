@@ -7,8 +7,7 @@ public class MinHeap <T extends CopiableYComparable>{
     private ArrayList<HandleMinHeap> handleArray;
     int cantidadElementos;
 
-    public class HandleMinHeap implements Handle<T>
-    {
+    public class HandleMinHeap implements Handle<T> {
         private int posicion;
         private T valor;
         
@@ -39,11 +38,11 @@ public class MinHeap <T extends CopiableYComparable>{
         public void reemplazarValor(T nuevoValor){
             this.valor = nuevoValor;
         }
-}
+    }
     //Para evitar el Warning del casteo.
     @SuppressWarnings("unchecked")
     public MinHeap(int capacidad){
-        arrayHeap =  (T[]) new Comparable[capacidad];
+        arrayHeap =  (T[]) new CopiableYComparable[capacidad];
         handleArray = new ArrayList<HandleMinHeap>(capacidad);
         for(int i = 0;i<capacidad;i++){
             handleArray.add(null);

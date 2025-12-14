@@ -29,7 +29,7 @@ public class NotaFinal implements CopiableYComparable {
         }
     }
     
-    @Override
+    //@Override
     public int compareTo(NotaFinal otra){
         if(otra == null){
             return 1;
@@ -43,7 +43,7 @@ public class NotaFinal implements CopiableYComparable {
 
     @Override
     public int compareTo(CopiableYComparable o) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'compareTo'");
+        NotaFinal nf = (NotaFinal) o;
+        return this.compareTo(nf);
     }
 }
